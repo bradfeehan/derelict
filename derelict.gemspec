@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   ].join,
   spec.summary       =
     "Ruby API for Vagrant installed via Installer package on Mac OS X."
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/bradfeehan/derelict"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
