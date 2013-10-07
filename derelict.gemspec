@@ -8,8 +8,21 @@ Gem::Specification.new do |spec|
   spec.version       = Derelict::VERSION
   spec.authors       = ["Brad Feehan"]
   spec.email         = ["git@bradfeehan.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = [
+    "Provides a Ruby API to control Vagrant where Vagrant is ",
+    "installed via the Installer package on Mac OS X.",
+    "\n\n",
+    "Vagrant was historically available as a gem, naturally ",
+    "providing a Ruby API to control Vagrant in other Ruby libraries ",
+    "and applications. However, since version 1.1.0, Vagrant is ",
+    "distributed exclusively using an Installer package. To control ",
+    "Vagrant when it's installed this way, other Ruby libraries and ",
+    "applications typically need to invoke the Vagrant binary, which ",
+    "requires forking a new process and parsing its output using ",
+    "string manipulation.",
+  ].join,
+  spec.summary       =
+    "Ruby API for Vagrant installed via Installer package on Mac OS X."
   spec.homepage      = ""
   spec.license       = "MIT"
 
