@@ -20,6 +20,15 @@ module Derelict
       validate!
     end
 
+    # Executes a Vagrant subcommand using this instance
+    #
+    #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
+    #   * arguments:  Arguments to pass to the subcommand (optional)
+    #   * block:      Passed through to Shell.execute (shell-executer)
+    def execute(subcommand, *arguments, &block)
+      Shell.execute(command(subcommand, *arguments), &block)
+    end
+
     private
       # Validates the data used for this instance
       #
@@ -40,6 +49,15 @@ module Derelict
       # Retrieves the path to the vagrant binary for this instance
       def vagrant
         File.join @path, "bin", "vagrant"
+      end
+
+      # Constructs the command to execute a Vagrant subcommand
+      #
+      #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
+      #   * arguments:  Arguments to pass to the subcommand (optional)
+      def command(subcommand, *arguments)
+        arguments = [vagrant, subcommand.to_s, arguments].flatten
+        arguments.map {|arg| Shellwords.escape arg }.join(' ')
       end
   end
 end

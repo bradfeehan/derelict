@@ -21,6 +21,30 @@ describe Derelict::Instance do
 
       its(:path) { should eq "/foo/bar" }
     end
+
+    describe "#execute" do
+      before {
+        expect(Shell).to receive(:execute)
+          .with("/foo/bar/bin/vagrant test arg\\ 1")
+          .and_return(double("result", {
+            :stdout => "stdout\n",
+            :stderr => "stderr\n",
+            :success? => true,
+          }))
+      }
+
+      subject {
+        Derelict::Instance.new("/foo/bar").execute(:test, "arg 1")
+      }
+
+      it "should call Shell#execute" do
+        subject
+      end
+
+      its(:stdout) { should eq "stdout\n" }
+      its(:stderr) { should eq "stderr\n" }
+      its(:success?) { should be true }
+    end
   end
 
   context "with non-existent directory" do

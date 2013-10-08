@@ -1,4 +1,5 @@
 require "derelict/version"
+require "shell/executer"
 
 module Derelict
   autoload :Exception, "derelict/exception"
