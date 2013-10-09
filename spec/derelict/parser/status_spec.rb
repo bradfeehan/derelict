@@ -1,0 +1,123 @@
+require "derelict"
+
+describe Derelict::Parser::Status do
+  let(:output) { nil }
+  subject { Derelict::Parser::Status.new output }
+
+  it "is autoloaded" do
+    should be_a Derelict::Parser::Status
+  end
+
+  context "with valid output" do
+    let(:output) {
+      <<-END.gsub /^ +/, ""
+        Current machine states:
+
+        foo                       not created (virtualbox)
+
+        The environment has not yet been created. Run `vagrant up` to
+        create the environment. If a machine is not created, only the
+        default provider will be shown. So if a provider is not listed,
+        then the machine is not created for that environment.
+      END
+    }
+
+    describe "#parse!" do
+      it "should parse without errors" do
+        expect { subject.parse! }.to_not raise_error
+      end
+    end
+
+    describe "#exists?" do
+      before { subject.parse! }
+
+      it "should return true for 'foo' VM" do
+        expect(subject.exists?(:foo)).to be true
+      end
+
+      it "should return false for unknown VM" do
+        expect(subject.exists?(:bar)).to be false
+      end
+    end
+  end
+
+  context "with multi-machine output" do
+    let(:output) {
+      <<-END.gsub /^ +/, ""
+        Current machine states:
+
+        foo                       not created (virtualbox)
+        bar                       not created (virtualbox)
+
+        This environment represents multiple VMs. The VMs are all listed
+        above with their current state. For more information about a specific
+        VM, run `vagrant status NAME`.
+      END
+    }
+
+    describe "#parse!" do
+      it "should parse without errors" do
+        expect { subject.parse! }.to_not raise_error
+      end
+    end
+
+    describe "#exists?" do
+      before { subject.parse! }
+
+      it "should return true for 'foo' VM" do
+        expect(subject.exists?(:foo)).to be true
+      end
+
+      it "should return true for 'bar' VM" do
+        expect(subject.exists?(:bar)).to be true
+      end
+
+      it "should return false for unknown VM" do
+        expect(subject.exists?(:baz)).to be false
+      end
+    end
+  end
+
+
+  context "with invalid list format" do
+    let(:output) {
+      <<-END.gsub /^ +/, ""
+        This output is missing the list of virtual machines.
+      END
+    }
+
+    describe "#parse!" do
+      it "should raise InvalidFormat" do
+        type = Derelict::Parser::Status::InvalidFormat
+        message = [
+          "Output from 'vagrant status' was in an unexpected format: ",
+          "Couldn't find list of VMs",
+        ].join
+        expect { subject.parse! }.to raise_error type, message
+      end
+    end
+  end
+
+  context "with invalid VM format" do
+    let(:output) {
+      <<-END.gsub /^ +/, ""
+        Current machine states:
+
+        foo                       this line is missing brackets!
+        bar                       not created (virtualbox)
+
+        This environment represents multiple VMs. The VMs are all listed
+        above with their current state. For more information about a specific
+        VM, run `vagrant status NAME`.
+      END
+    }
+
+    describe "#parse!" do
+      type = Derelict::Parser::Status::InvalidFormat
+      message = "Output from 'vagrant status' was in an unexpected format: Couldn't parse VM list"
+      it "should raise InvalidFormat" do
+        expect { subject.parse! }.to raise_error type, message
+      end
+    end
+  end
+end
