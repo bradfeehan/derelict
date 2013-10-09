@@ -5,6 +5,7 @@ module Derelict
   autoload :Connection, "derelict/connection"
   autoload :Exception,  "derelict/exception"
   autoload :Instance,   "derelict/instance"
+  autoload :Parser,     "derelict/parser"
 
   # Make functions accessible by Derelict.foo and private when included
   module_function
