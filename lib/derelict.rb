@@ -2,8 +2,9 @@ require "derelict/version"
 require "shell/executer"
 
 module Derelict
-  autoload :Exception, "derelict/exception"
-  autoload :Instance,  "derelict/instance"
+  autoload :Connection, "derelict/connection"
+  autoload :Exception,  "derelict/exception"
+  autoload :Instance,   "derelict/instance"
 
   # Make functions accessible by Derelict.foo and private when included
   module_function

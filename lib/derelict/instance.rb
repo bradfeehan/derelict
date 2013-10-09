@@ -29,6 +29,14 @@ module Derelict
       Shell.execute(command(subcommand, *arguments), &block)
     end
 
+    # Initializes a Connection for use in a particular directory
+    #
+    #   * instance: The Derelict::Instance to use to control Vagrant
+    #   * path:     The project path, which contains the Vagrantfile
+    def connect(path)
+      Derelict::Connection.new self, path
+    end
+
     private
       # Validates the data used for this instance
       #
