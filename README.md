@@ -37,6 +37,45 @@ Or install it yourself as:
     $ gem install derelict
 
 
+## Usage
+
+Some examples of common operations using Derelict:
+
+```ruby
+require "derelict"
+
+# Determine if there's a "default" VM defined in /path/to/project
+Derelict.instance.connect("/path/to/project").vm(:default).exists?
+```
+
+### Advanced
+
+```ruby
+require "derelict"
+
+# Create an instance (represents a Vagrant installation)
+instance = Derelict.instance("/path/to/vagrant")
+instance = Derelict.instance # Defaults to /Applications/Vagrant
+
+# Issue commands to the instance directly (not usually necessary)
+result = instance.execute('--version') # Shell::Executer object
+print "success" if result.success?     # if Vagrant's exit status was 0
+print result.stdout                    # "Vagrant 1.3.3\n"
+
+# Connect to a Vagrant project (containing a Vagrantfile)
+connection = instance.connect("/path/to/project")
+
+# Issue commands to the connection directly (runs from the project dir)
+result = connection.execute(:up) # runs "vagrant up" in project dir
+result.success?                  # it's a Shell::Executer object again
+
+# Retrieve a particular VM from a connection (multi-machine support)
+vm = connection.vm(:web) # "vm" is a Derelict::VirtualMachine
+vm.exists?               # does the connection define a "web" VM?
+
+```
+
+
 ## Contributing
 
 1. Fork it
