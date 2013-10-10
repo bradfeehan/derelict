@@ -16,24 +16,24 @@ module Derelict
       \)$               # and ends at a closing bracket at line end.
       /x                # Ignore whitespace to allow these comments
 
-    # Extracts data from the output
-    def parse!
-      list = output.match PARSE_LIST_FROM_OUTPUT
-      raise InvalidFormat.new "Couldn't find list of VMs" if list.nil?
-
-      @vm_names = []
-      list.captures[0].lines.each do |line|
+    # Retrieves the names of all virtual machines in the output
+    #
+    # The names are returned as an array of symbols.
+    def vm_names
+      @vm_names ||= output.match(PARSE_LIST_FROM_OUTPUT).tap {|list|
+        raise InvalidFormat.new "Couldn't find list of VMs" if list.nil?
+      }.captures[0].lines.map {|line|
         state = line.match PARSE_STATE_FROM_LIST_ITEM
         raise InvalidFormat.new "Couldn't parse VM list" if state.nil?
-        @vm_names << state[:name].to_sym
-      end
+        state[:name].to_sym
+      }
     end
 
     # Determines if a particular virtual machine exists in the output
     #
     #   * vm_name: The name of the virtual machine to look for
     def exists?(vm_name)
-      @vm_names.include? vm_name.to_sym
+      vm_names.include? vm_name.to_sym
     end
   end
 end

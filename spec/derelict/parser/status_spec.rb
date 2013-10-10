@@ -1,8 +1,8 @@
 require "derelict"
 
 describe Derelict::Parser::Status do
-  let(:output) { nil }
   subject { Derelict::Parser::Status.new output }
+  let(:output) { nil }
 
   it "is autoloaded" do
     should be_a Derelict::Parser::Status
@@ -22,15 +22,12 @@ describe Derelict::Parser::Status do
       END
     }
 
-    describe "#parse!" do
-      it "should parse without errors" do
-        expect { subject.parse! }.to_not raise_error
-      end
+    describe "#vm_names" do
+      subject { Derelict::Parser::Status.new(output).vm_names }
+      it { should eq [:foo] }
     end
 
     describe "#exists?" do
-      before { subject.parse! }
-
       it "should return true for 'foo' VM" do
         expect(subject.exists?(:foo)).to be true
       end
@@ -55,15 +52,12 @@ describe Derelict::Parser::Status do
       END
     }
 
-    describe "#parse!" do
-      it "should parse without errors" do
-        expect { subject.parse! }.to_not raise_error
-      end
+    describe "#vm_names" do
+      subject { Derelict::Parser::Status.new(output).vm_names }
+      it { should eq [:foo, :bar] }
     end
 
     describe "#exists?" do
-      before { subject.parse! }
-
       it "should return true for 'foo' VM" do
         expect(subject.exists?(:foo)).to be true
       end
@@ -86,14 +80,15 @@ describe Derelict::Parser::Status do
       END
     }
 
-    describe "#parse!" do
+    describe "#vm_names" do
+      subject { Derelict::Parser::Status.new(output).vm_names }
       it "should raise InvalidFormat" do
         type = Derelict::Parser::Status::InvalidFormat
         message = [
           "Output from 'vagrant status' was in an unexpected format: ",
           "Couldn't find list of VMs",
         ].join
-        expect { subject.parse! }.to raise_error type, message
+        expect { subject }.to raise_error type, message
       end
     end
   end
@@ -112,10 +107,11 @@ describe Derelict::Parser::Status do
       END
     }
 
-    describe "#parse!" do
-      type = Derelict::Parser::Status::InvalidFormat
-      message = "Output from 'vagrant status' was in an unexpected format: Couldn't parse VM list"
+    describe "#vm_names" do
+      subject { Derelict::Parser::Status.new(output).vm_names }
       it "should raise InvalidFormat" do
+        type = Derelict::Parser::Status::InvalidFormat
+        message = "Output from 'vagrant status' was in an unexpected format: Couldn't parse VM list"
         expect { subject.parse! }.to raise_error type, message
       end
     end

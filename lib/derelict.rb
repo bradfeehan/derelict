@@ -16,6 +16,6 @@ module Derelict
   #   * path: The path to the Vagrant installation (optional, defaults
   #           to Instance::DEFAULT_PATH)
   def instance(path = Instance::DEFAULT_PATH)
-    Instance.new path
+    Instance.new(path).validate!
   end
 end

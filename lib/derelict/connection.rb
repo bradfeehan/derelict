@@ -16,6 +16,16 @@ module Derelict
       @path = path
     end
 
+    # Validates the data used for this connection
+    #
+    # Raises exceptions on failure:
+    #
+    #   * +Derelict::Connection::NotFound+ if the path is not found
+    def validate!
+      raise NotFound.new path unless File.exists? path
+      self
+    end
+
     # Executes a Vagrant subcommand using this connection
     #
     #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
@@ -44,17 +54,7 @@ module Derelict
     #
     #   * name: The name of the virtual machine to retrieve
     def vm(name)
-      Derelict::VirtualMachine.new self, name
+      Derelict::VirtualMachine.new(self, name).validate!
     end
-
-    private
-      # Validates the data used for this connection
-      #
-      # Raises exceptions on failure:
-      #
-      #   * +Derelict::Connection::NotFound+ if the path is not found
-      def validate!
-        raise NotFound.new path unless File.exists? path
-      end
   end
 end

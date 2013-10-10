@@ -18,7 +18,23 @@ module Derelict
     #           defaults to DEFAULT_PATH)
     def initialize(path = DEFAULT_PATH)
       @path = path
-      validate!
+    end
+
+    # Validates the data used for this instance
+    #
+    # Raises exceptions on failure:
+    #
+    #   * +Derelict::Instance::NotFound+ if the instance is not found
+    #   * +Derelict::Instance::NonDirectory+ if the path is a file,
+    #     instead of a directory as expected
+    #   * +Derelict::Instance::MissingBinary+ if the "vagrant" binary
+    #     isn't in the expected location or is not executable
+    def validate!
+      raise NotFound.new path unless File.exists? path
+      raise NonDirectory.new path unless File.directory? path
+      raise MissingBinary.new vagrant unless File.exists? vagrant
+      raise MissingBinary.new vagrant unless File.executable? vagrant
+      self
     end
 
     # Executes a Vagrant subcommand using this instance
@@ -51,26 +67,10 @@ module Derelict
     #   * instance: The Derelict::Instance to use to control Vagrant
     #   * path:     The project path, which contains the Vagrantfile
     def connect(path)
-      Derelict::Connection.new self, path
+      Derelict::Connection.new(self, path).validate!
     end
 
     private
-      # Validates the data used for this instance
-      #
-      # Raises exceptions on failure:
-      #
-      #   * +Derelict::Instance::NotFound+ if the instance is not found
-      #   * +Derelict::Instance::NonDirectory+ if the path is a file,
-      #     instead of a directory as expected
-      #   * +Derelict::Instance::MissingBinary+ if the "vagrant" binary
-      #     isn't in the expected location or is not executable
-      def validate!
-        raise NotFound.new path unless File.exists? path
-        raise NonDirectory.new path unless File.directory? path
-        raise MissingBinary.new vagrant unless File.exists? vagrant
-        raise MissingBinary.new vagrant unless File.executable? vagrant
-      end
-
       # Retrieves the path to the vagrant binary for this instance
       def vagrant
         File.join @path, "bin", "vagrant"

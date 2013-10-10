@@ -17,7 +17,18 @@ module Derelict
     def initialize(connection, name = nil)
       @connection = connection
       @name = name
-      validate!
+    end
+
+    # Validates the data used for this connection
+    #
+    # Raises exceptions on failure:
+    #
+    #   * +Derelict::VirtualMachine::NotFound+ if the connection
+    #     doesn't know about a virtual machine with the requested
+    #     name
+    def validate!
+      raise NotFound.new connection, name unless exists?
+      self
     end
 
     # Determines whether this Vagrant virtual machine exists
@@ -35,17 +46,5 @@ module Derelict
         Derelict::Parser::Status.new(output)
       )
     end
-
-    private
-      # Validates the data used for this connection
-      #
-      # Raises exceptions on failure:
-      #
-      #   * +Derelict::VirtualMachine::NotFound+ if the connection
-      #     doesn't know about a virtual machine with the requested
-      #     name
-      def validate!
-        raise NotFound.new connection, name unless exists?
-      end
   end
 end

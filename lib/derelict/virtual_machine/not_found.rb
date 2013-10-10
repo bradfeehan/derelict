@@ -7,7 +7,11 @@ module Derelict
       #   * connection: The Derelict connection used for this VM
       #   * name:       The requested name of the virtual machine
       def initialize(connection, name)
-        super "Virtual machine #{name} not found in #{connection.path}"
+        if connection.respond_to? :path
+          super "Virtual machine #{name} not found in #{connection.path}"
+        else
+          super "Virtual machine #{name} not found"
+        end
       end
     end
   end
