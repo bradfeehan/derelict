@@ -31,7 +31,7 @@ module Derelict
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
-        output = connection.execute(:status).stdout
+        output = connection.execute!(:status).stdout
         Derelict::Parser::Status.new(output)
       )
     end

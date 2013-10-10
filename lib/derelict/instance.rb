@@ -1,6 +1,7 @@
 module Derelict
   # Represents a Vagrant instance installed via the Installer package
   class Instance
+    autoload :CommandFailed, "derelict/instance/command_failed"
     autoload :Invalid,       "derelict/instance/invalid"
     autoload :MissingBinary, "derelict/instance/missing_binary"
     autoload :NonDirectory,  "derelict/instance/non_directory"
@@ -27,6 +28,22 @@ module Derelict
     #   * block:      Passed through to Shell.execute (shell-executer)
     def execute(subcommand, *arguments, &block)
       Shell.execute(command(subcommand, *arguments), &block)
+    end
+
+    # Executes a Vagrant subcommand, raising an exception on failure
+    #
+    #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
+    #   * arguments:  Arguments to pass to the subcommand (optional)
+    #   * block:      Passed through to Shell.execute (shell-executer)
+    #
+    # Raises +Derelict::Instance::CommandFailed+ if the command fails.
+    def execute!(subcommand, *arguments, &block)
+      execute(subcommand, *arguments, &block).tap do |result|
+        unless result.success?
+          command = command(subcommand, *arguments)
+          raise CommandFailed.new command, result
+        end
+      end
     end
 
     # Initializes a Connection for use in a particular directory

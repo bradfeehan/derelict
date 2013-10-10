@@ -27,6 +27,19 @@ module Derelict
       end
     end
 
+    # Executes a Vagrant subcommand, raising an exception on failure
+    #
+    #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
+    #   * arguments:  Arguments to pass to the subcommand (optional)
+    #   * block:      Passed through to Shell.execute (shell-executer)
+    #
+    # Raises +Derelict::Instance::CommandFailed+ if the command fails.
+    def execute!(subcommand, *arguments, &block)
+      Dir.chdir path do
+        instance.execute! subcommand.to_sym, *arguments, &block
+      end
+    end
+
     # Retrieves a Derelict::VirtualMachine for a particular VM
     #
     #   * name: The name of the virtual machine to retrieve
