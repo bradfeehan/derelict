@@ -27,6 +27,13 @@ module Derelict
       end
     end
 
+    # Retrieves a Derelict::VirtualMachine for a particular VM
+    #
+    #   * name: The name of the virtual machine to retrieve
+    def vm(name)
+      Derelict::VirtualMachine.new self, name
+    end
+
     private
       # Validates the data used for this connection
       #

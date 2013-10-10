@@ -2,10 +2,11 @@ require "derelict/version"
 require "shell/executer"
 
 module Derelict
-  autoload :Connection, "derelict/connection"
-  autoload :Exception,  "derelict/exception"
-  autoload :Instance,   "derelict/instance"
-  autoload :Parser,     "derelict/parser"
+  autoload :Connection,     "derelict/connection"
+  autoload :Exception,      "derelict/exception"
+  autoload :Instance,       "derelict/instance"
+  autoload :Parser,         "derelict/parser"
+  autoload :VirtualMachine, "derelict/virtual_machine"
 
   # Make functions accessible by Derelict.foo and private when included
   module_function
