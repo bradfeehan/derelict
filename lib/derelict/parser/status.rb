@@ -20,13 +20,7 @@ module Derelict
     #
     # The names are returned as an array of symbols.
     def vm_names
-      @vm_names ||= output.match(PARSE_LIST_FROM_OUTPUT).tap {|list|
-        raise InvalidFormat.new "Couldn't find list of VMs" if list.nil?
-      }.captures[0].lines.map {|line|
-        state = line.match PARSE_STATE_FROM_LIST_ITEM
-        raise InvalidFormat.new "Couldn't parse VM list" if state.nil?
-        state.captures[0].to_sym
-      }
+      states.keys
     end
 
     # Determines if a particular virtual machine exists in the output
@@ -35,5 +29,42 @@ module Derelict
     def exists?(vm_name)
       vm_names.include? vm_name.to_sym
     end
+
+    # Determines the state of a particular virtual machine
+    #
+    # The state is returned as a symbol, e.g. :running.
+    #
+    #   * vm_name: The name of the virtual machine to retrieve state
+    def state(vm_name)
+      unless states.include? vm_name.to_sym
+        raise Derelict::VirtualMachine::NotFound.new vm_name
+      end
+
+      states[vm_name.to_sym]
+    end
+
+    private
+      # Retrieves the virtual machine list section of the output
+      def vm_lines
+        @vm_lines ||= output.match(PARSE_LIST_FROM_OUTPUT).tap {|list|
+          raise InvalidFormat.new "Couldn't find list of VMs" if list.nil?
+        }.captures[0].lines
+      end
+
+      # Retrieves the state data for all virtual machines in the output
+      #
+      # The state is returned as a Hash, mapping virtual machine names
+      # (as symbols) to their state (also as a symbol).
+      def states
+        @states ||= (
+          data = vm_lines.map {|l| l.match PARSE_STATE_FROM_LIST_ITEM }
+          message = "Couldn't parse VM list"
+          raise InvalidFormat.new message if data.any?(&:nil?)
+          Hash[data.map {|line| [
+            line.captures[0].gsub(/\s+/, "_").downcase.to_sym,
+            line.captures[1].gsub(/\s+/, "_").downcase.to_sym,
+          ] }]
+        )
+      end
   end
 end
