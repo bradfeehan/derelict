@@ -7,14 +7,14 @@ module Derelict
     PARSE_LIST_FROM_OUTPUT = /\n\n((?:.*\n)+)\n/
 
     # Regexp to extract the state from a line in the VM list
-    PARSE_STATE_FROM_LIST_ITEM = /
-      ^(?<name>.*?)     # VM name starts at the start of the line,
-      \s{2,}            # to the first instance of 2 or more spaces.
-      (?<state>.*?)     # VM state starts after the whitespace,
-      \s+\(             # continuing until whitespace and open bracket.
-        (?<provider>.*) # The provider name starts after the bracket,
-      \)$               # and ends at a closing bracket at line end.
-      /x                # Ignore whitespace to allow these comments
+    PARSE_STATE_FROM_LIST_ITEM = %r[
+      ^(.*?) # VM name starts at the start of the line,
+      \s{2,} # to the first instance of 2 or more spaces.
+      (.*?)  # VM state starts after the whitespace,
+      \s+\(  # continuing until whitespace and open bracket.
+        (.*) # The provider name starts after the bracket,
+      \)$    # and ends at a closing bracket at line end.
+      ]x     # Ignore whitespace to allow these comments
 
     # Retrieves the names of all virtual machines in the output
     #
@@ -25,7 +25,7 @@ module Derelict
       }.captures[0].lines.map {|line|
         state = line.match PARSE_STATE_FROM_LIST_ITEM
         raise InvalidFormat.new "Couldn't parse VM list" if state.nil?
-        state[:name].to_sym
+        state.captures[0].to_sym
       }
     end
 
