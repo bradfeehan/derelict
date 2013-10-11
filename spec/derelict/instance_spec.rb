@@ -83,14 +83,17 @@ describe Derelict::Instance do
     end
 
     describe "#execute" do
+      let(:arg) { "/foo/bar/bin/vagrant test arg\\ 1" }
+      let(:result) {
+        double("result", {
+          :stdout => "stdout\n",
+          :stderr => "stderr\n",
+          :success? => true,
+        })
+      }
+
       before {
-        expect(Shell).to receive(:execute)
-          .with("/foo/bar/bin/vagrant test arg\\ 1")
-          .and_return(double("result", {
-            :stdout => "stdout\n",
-            :stderr => "stderr\n",
-            :success? => true,
-          }))
+        expect(Shell).to receive(:execute).with(arg).and_return(result)
       }
 
       subject {

@@ -61,10 +61,8 @@ describe Derelict::VirtualMachine do
     subject { vm.status }
 
     before {
-      expect(connection).to receive(:execute!)
-        .with(:status).and_return(result)
-      expect(Derelict::Parser::Status).to receive(:new)
-        .with(stdout).and_return(:return_value)
+      expect(connection).to receive(:execute!).with(:status).and_return(result)
+      expect(Derelict::Parser::Status).to receive(:new).with(stdout).and_return(:return_value)
     }
 
     it "should parse status data from the connection" do
