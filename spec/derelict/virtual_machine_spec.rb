@@ -36,26 +36,31 @@ describe Derelict::VirtualMachine do
     end
   end
 
-  describe "exists?" do
+  describe "#exists?" do
     let(:status) { double("status", :exists? => exists?) }
+    let(:exists?) { double("exists") }
 
     before { expect(vm).to receive(:status).and_return(status) }
     subject { vm.exists? }
 
-    context "when status.exists? is false" do
-      let(:exists?) { false }
-      it { should be false }
-    end
-
-    context "when status.exists? is true" do
-      let(:exists?) { true }
-      it { should be true }
+    it "should delegate to the status parser" do
+      expect(subject).to be exists?
     end
   end
 
-  describe "status" do
-    # output = connection.execute!(:status).stdout
-    # Derelict::Parser::Status.new(output)
+  describe "#state" do
+    let(:status) { double("status", :state => state) }
+    let(:state) { double("state") }
+
+    before { expect(vm).to receive(:status).and_return(status) }
+    subject { vm.state }
+
+    it "should delegate to the status parser" do
+      expect(subject).to be state
+    end
+  end
+
+  describe "#status" do
     let(:result) { double("result", :stdout => stdout) }
     let(:stdout) { double("stdout") }
     subject { vm.status }
@@ -67,6 +72,21 @@ describe Derelict::VirtualMachine do
 
     it "should parse status data from the connection" do
       expect(subject).to be :return_value
+    end
+  end
+
+  describe "#running?" do
+    before { expect(vm).to receive(:state).and_return(state) }
+    subject { vm.running? }
+
+    context "when state is :running" do
+      let(:state) { :running }
+      it { should be true }
+    end
+
+    context "when state is :foo" do
+      let(:state) { :foo }
+      it { should be false }
     end
   end
 end

@@ -39,6 +39,18 @@ module Derelict
       @exists ||= status.exists? name
     end
 
+    # Gets the current state of this Vagrant virtual machine
+    #
+    # The state is returned as a symbol, e.g. :running.
+    def state
+      @state ||= status.state name
+    end
+
+    # Determines whether this virtual machine is currently running
+    def running?
+      @running ||= (state == :running)
+    end
+
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
