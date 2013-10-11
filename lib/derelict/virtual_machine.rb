@@ -27,7 +27,7 @@ module Derelict
     #     doesn't know about a virtual machine with the requested
     #     name
     def validate!
-      raise NotFound.new connection, name unless exists?
+      raise NotFound.new name, connection unless exists?
       self
     end
 

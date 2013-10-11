@@ -3,7 +3,7 @@ require "derelict"
 describe Derelict::VirtualMachine::NotFound do
   let(:connection) { double("connection") }
   let(:name) { "foo" }
-  let(:exception) { Derelict::VirtualMachine::NotFound.new connection, name }
+  let(:exception) { Derelict::VirtualMachine::NotFound.new name, connection }
   subject { exception }
 
   it "is autoloaded" do
