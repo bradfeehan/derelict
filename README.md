@@ -72,7 +72,9 @@ result.success?                  # it's a Shell::Executer object again
 # Retrieve a particular VM from a connection (multi-machine support)
 vm = connection.vm(:web) # "vm" is a Derelict::VirtualMachine
 vm.exists?               # does the connection define a "web" VM?
-
+vm.state                 # current VM state (:running, :not_created...)
+vm.running?              # whether the VM is currently running or not
+vm.up                    # runs "vagrant up" for this VM only
 ```
 
 
