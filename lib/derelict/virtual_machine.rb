@@ -51,6 +51,22 @@ module Derelict
       @running ||= (state == :running)
     end
 
+    # Start this Vagrant virtual machine
+    #
+    #   * options: Hash of options
+    #     * log: Should the log output be printed? (optional, defaults
+    #            to false)
+    def up(options = {})
+      options = {:log => false}.merge(options)
+
+      if options[:log]
+        # TODO: implement a real logging solution
+        connection.execute!(:up, name) {|line| print line }
+      else
+        connection.execute! :up, name
+      end
+    end
+
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
