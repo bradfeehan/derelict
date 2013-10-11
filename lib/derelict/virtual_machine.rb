@@ -12,9 +12,8 @@ module Derelict
     #   * connection: The +Derelict::Connection+ to use to manipulate
     #                 the VirtualMachine instance
     #   * name:       The name of the virtual machine, used when
-    #                 communicating with the connection (optional, if
-    #                 omitted, the primary VM will be used)
-    def initialize(connection, name = nil)
+    #                 communicating with the connection)
+    def initialize(connection, name)
       @connection = connection
       @name = name
     end
