@@ -1,11 +1,28 @@
 require "derelict"
 
 describe Derelict::Instance do
-  subject { Derelict::Instance.new path }
+  let(:instance) { Derelict::Instance.new path }
   let(:path) { nil }
+
+  subject { instance }
 
   it "is autoloaded" do
     should be_a Derelict::Instance
+  end
+
+  describe "#version" do
+    let(:result) { double("result", :stdout => stdout) }
+    let(:stdout) { double("stdout") }
+    let(:parser) { double("parser", :version => "the version") }
+    subject { instance.version }
+    before {
+      expect(instance).to receive(:execute!).with("--version").and_return(result)
+      expect(Derelict::Parser::Version).to receive(:new).with(stdout).and_return(parser)
+    }
+
+    it "should execute --version and parse the result" do
+      expect(subject).to eq "the version"
+    end
   end
 
   context "with path parameter" do
@@ -16,7 +33,7 @@ describe Derelict::Instance do
     end
 
     describe "#validate!" do
-      subject { Derelict::Instance.new(path).validate! }
+      subject { instance.validate! }
 
       context "with valid path" do
         before {
@@ -96,9 +113,7 @@ describe Derelict::Instance do
         expect(Shell).to receive(:execute).with(arg).and_return(result)
       }
 
-      subject {
-        Derelict::Instance.new("/foo/bar").execute(:test, "arg 1")
-      }
+      subject { instance.execute(:test, "arg 1") }
 
       its(:stdout) { should eq "stdout\n" }
       its(:stderr) { should eq "stderr\n" }

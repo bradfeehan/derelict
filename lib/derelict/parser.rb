@@ -1,7 +1,8 @@
 module Derelict
   # Base class for parsers, which extract data from command output
   class Parser
-    autoload :Status, "derelict/parser/status"
+    autoload :Status,  "derelict/parser/status"
+    autoload :Version, "derelict/parser/version"
 
     attr_reader :output
 

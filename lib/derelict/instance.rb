@@ -37,6 +37,14 @@ module Derelict
       self
     end
 
+    # Determines the version of this Vagrant instance
+    def version
+      @version ||= (
+        output = execute!("--version").stdout
+        Derelict::Parser::Version.new(output).version
+      )
+    end
+
     # Executes a Vagrant subcommand using this instance
     #
     #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
