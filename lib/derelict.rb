@@ -1,4 +1,5 @@
 require "derelict/version"
+require "log4r"
 require "shell/executer"
 
 module Derelict
@@ -10,6 +11,11 @@ module Derelict
 
   # Make functions accessible by Derelict.foo and private when included
   module_function
+
+  # Retrieves the base Log4r::Logger used by Derelict
+  def logger
+    ::Log4r::Logger["derelict"] || ::Log4r::Logger.new("derelict")
+  end
 
   # Creates a new Derelict instance for a Vagrant installation
   #
