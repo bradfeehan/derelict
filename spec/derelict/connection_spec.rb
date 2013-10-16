@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Connection do
   let(:instance) { double('instance') }

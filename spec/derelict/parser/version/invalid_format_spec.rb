@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Parser::Version::InvalidFormat do
   it "is autoloaded" do

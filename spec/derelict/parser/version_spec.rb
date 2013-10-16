@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Parser::Version do
   let(:parser) { Derelict::Parser::Version.new stdout }

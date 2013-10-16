@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Instance do
   let(:instance) { Derelict::Instance.new path }

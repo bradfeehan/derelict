@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Connection::NotFound do
   subject { Derelict::Connection::NotFound.new "/foo/bar" }

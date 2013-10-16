@@ -6,6 +6,7 @@ module Derelict
   autoload :Connection,     "derelict/connection"
   autoload :Exception,      "derelict/exception"
   autoload :Instance,       "derelict/instance"
+  autoload :Log4r,          "derelict/log4r"
   autoload :Parser,         "derelict/parser"
   autoload :VirtualMachine, "derelict/virtual_machine"
 

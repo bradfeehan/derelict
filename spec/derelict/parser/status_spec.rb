@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Parser::Status do
   subject { Derelict::Parser::Status.new output }

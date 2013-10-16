@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Instance::MissingBinary do
   subject { Derelict::Instance::MissingBinary.new "/foo/bar" }

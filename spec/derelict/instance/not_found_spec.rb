@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Instance::NotFound do
   subject { Derelict::Instance::NotFound.new "/foo/bar" }

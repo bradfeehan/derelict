@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::VirtualMachine::NotFound do
   let(:connection) { double("connection") }
