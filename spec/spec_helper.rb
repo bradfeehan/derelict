@@ -14,4 +14,9 @@ RSpec.configure do |config|
     # Add the ArrayOutputter to the base Derelict logger
     derelict_logger.outputters = [array_outputter]
   end
+
+  # Forbid .should syntax
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
