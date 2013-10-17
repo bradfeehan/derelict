@@ -1,4 +1,5 @@
 require "derelict"
+require File.join(File.dirname(__FILE__), "support", "log_context")
 
 derelict_logger = Derelict.logger
 array_outputter = Derelict::Log4r::ArrayOutputter.new "rspec"

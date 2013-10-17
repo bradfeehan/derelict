@@ -12,8 +12,11 @@ module Derelict
       # By default, the name of the logger is just the lowercase
       # version of the class name.
       def logger_name
-        instance_name = self.respond_to?(:name) ? self.name : nil
-        (instance_name or self.class.name).downcase
+        if self.is_a? Module
+          self.name.downcase
+        else
+          self.class.name.downcase
+        end
       end
   end
 end
