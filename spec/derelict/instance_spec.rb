@@ -50,6 +50,14 @@ describe Derelict::Instance do
         it "should be chainable" do
           expect(subject).to be_a Derelict::Instance
         end
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+          " INFO instance: Successfully validated Derelict::Instance at '/foo/bar'\n",
+        ]}
       end
 
       context "with non-existent path" do
@@ -60,6 +68,13 @@ describe Derelict::Instance do
         it "should raise NotFound" do
           expect { subject }.to raise_error Derelict::Instance::NotFound
         end
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
+          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: directory doesn't exist: /foo/bar\n",
+        ]}
       end
 
       context "with path pointing to a file" do
@@ -71,6 +86,13 @@ describe Derelict::Instance do
         it "should raise NonDirectory" do
           expect { subject }.to raise_error Derelict::Instance::NonDirectory
         end
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
+          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: expected directory, found file: /foo/bar\n",
+        ]}
       end
 
       context "with vagrant binary missing" do
@@ -83,6 +105,14 @@ describe Derelict::Instance do
         it "should raise MissingBinary" do
           expect { subject }.to raise_error Derelict::Instance::MissingBinary
         end
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: 'vagrant' binary not found at /foo/bar/bin/vagrant\n",
+        ]}
       end
 
       context "with vagrant binary non-executable" do
@@ -96,6 +126,14 @@ describe Derelict::Instance do
         it "should raise MissingBinary" do
           expect { subject }.to raise_error Derelict::Instance::MissingBinary
         end
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: 'vagrant' binary not found at /foo/bar/bin/vagrant\n",
+        ]}
       end
     end
 
@@ -118,6 +156,14 @@ describe Derelict::Instance do
       its(:stdout) { should eq "stdout\n" }
       its(:stderr) { should eq "stderr\n" }
       its(:success?) { should be true }
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+        "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+        "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
+        "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
+      ]}
     end
   end
 end
