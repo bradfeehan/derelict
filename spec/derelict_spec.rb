@@ -1,11 +1,19 @@
 require "spec_helper"
 
 describe Derelict do
-  let(:logger) { Derelict.logger }
+  describe "#instance" do
+    let(:instance) { double("instance") }
+    before {
+      expect(Derelict::Instance).to receive(:new).and_return(instance)
+      expect(instance).to receive(:validate!).and_return(instance)
+    }
 
-  describe "::logger" do
-    subject { logger }
-    it { should be_a Log4r::Logger }
-    its(:name) { should eq "derelict" }
+    subject { Derelict.instance }
+    it { should be instance }
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      " INFO derelict: Creating and validating new instance for '/Applications/Vagrant'\n"
+    ]}
   end
 end
