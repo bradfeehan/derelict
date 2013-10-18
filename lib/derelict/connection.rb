@@ -4,6 +4,9 @@ module Derelict
     autoload :Invalid,  "derelict/connection/invalid"
     autoload :NotFound, "derelict/connection/not_found"
 
+    # Include "logger" method to get a logger for this class
+    include Logger
+
     attr_reader :instance
     attr_reader :path
 
@@ -14,6 +17,7 @@ module Derelict
     def initialize(instance, path)
       @instance = instance
       @path = path
+      logger.debug "Successfully initialized #{description}"
     end
 
     # Validates the data used for this connection
@@ -22,8 +26,13 @@ module Derelict
     #
     #   * +Derelict::Connection::NotFound+ if the path is not found
     def validate!
+      logger.debug "Starting validation for #{description}"
       raise NotFound.new path unless File.exists? path
+      logger.info "Successfully validated #{description}"
       self
+    rescue Derelict::Connection::Invalid => e
+      logger.warn "Validation failed for #{description}: #{e.message}"
+      raise
     end
 
     # Executes a Vagrant subcommand using this connection
@@ -32,6 +41,7 @@ module Derelict
     #   * arguments:  Arguments to pass to the subcommand (optional)
     #   * block:      Passed through to @instance#execute
     def execute(subcommand, *arguments, &block)
+      log_execute subcommand, *arguments
       Dir.chdir path do
         instance.execute subcommand.to_sym, *arguments, &block
       end
@@ -45,6 +55,7 @@ module Derelict
     #
     # Raises +Derelict::Instance::CommandFailed+ if the command fails.
     def execute!(subcommand, *arguments, &block)
+      log_execute subcommand, *arguments
       Dir.chdir path do
         instance.execute! subcommand.to_sym, *arguments, &block
       end
@@ -54,7 +65,23 @@ module Derelict
     #
     #   * name: The name of the virtual machine to retrieve
     def vm(name)
+      logger.debug "Retrieving VM '#{name}' from #{description}"
       Derelict::VirtualMachine.new(self, name).validate!
     end
+
+    # Provides a description of this Connection
+    #
+    # Mainly used for log messages.
+    def description
+      "Derelict::Connection at '#{path}' using #{instance.description}"
+    end
+
+    private
+      # Handles the logging that should occur for a call to #execute(!)
+      def log_execute(subcommand, *arguments)
+        logger.debug do
+          "Executing #{subcommand.to_s} #{arguments} on #{description}"
+        end
+      end
   end
 end
