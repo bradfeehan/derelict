@@ -100,6 +100,19 @@ module Derelict
       connection.execute! :destroy, name, '--force', &shell_log_block(options[:log])
     end
 
+    # Reload this Vagrant virtual machine
+    #
+    # Reloading involves a "halt" (shut down) followed by "up" (boot).
+    #
+    #   * options: Hash of options
+    #     * log: Should the log output be printed? (optional, defaults
+    #            to false)
+    def reload(options = {})
+      logger.info "Reloading #{description}"
+      options = {:log => false}.merge(options)
+      connection.execute! :reload, name, &shell_log_block(options[:log])
+    end
+
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
