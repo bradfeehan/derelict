@@ -5,7 +5,7 @@ module Derelict
     autoload :NotFound, "derelict/virtual_machine/not_found"
 
     # Include "logger" method to get a logger for this class
-    include Logger
+    include Utils::Logger
 
     COMMANDS = [
       :up,

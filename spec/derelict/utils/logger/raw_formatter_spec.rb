@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe Derelict::Logger::RawFormatter do
-  let(:formatter) { Derelict::Logger::RawFormatter.new }
+describe Derelict::Utils::Logger::RawFormatter do
+  let(:formatter) { Derelict::Utils::Logger::RawFormatter.new }
   subject { formatter }
 
   it "is autoloaded" do
-    should be_a Derelict::Logger::RawFormatter
+    should be_a Derelict::Utils::Logger::RawFormatter
   end
 
   describe "#format" do

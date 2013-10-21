@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "support", "log_context")
 
 derelict_logger = Derelict.logger
 external_logger = Derelict.logger :type => :external
-array_outputter = Derelict::Logger::ArrayOutputter.new "rspec"
+array_outputter = Derelict::Utils::Logger::ArrayOutputter.new "rspec"
 
 RSpec.configure do |config|
   config.before :each do

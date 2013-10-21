@@ -5,7 +5,7 @@ module Derelict
     autoload :Version, "derelict/parser/version"
 
     # Include "logger" method to get a logger for this class
-    include Logger
+    include Utils::Logger
 
     attr_reader :output
 

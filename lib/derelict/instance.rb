@@ -8,7 +8,7 @@ module Derelict
     autoload :NotFound,      "derelict/instance/not_found"
 
     # Include "logger" method to get a logger for this class
-    include Logger
+    include Utils::Logger
 
     # The default path to the Vagrant installation folder
     DEFAULT_PATH = "/Applications/Vagrant"

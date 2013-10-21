@@ -9,15 +9,15 @@ module Derelict
   autoload :Exception,      "derelict/exception"
   autoload :Instance,       "derelict/instance"
   autoload :Log4r,          "derelict/log4r"
-  autoload :Logger,         "derelict/logger"
   autoload :Parser,         "derelict/parser"
+  autoload :Utils,          "derelict/utils"
   autoload :VirtualMachine, "derelict/virtual_machine"
 
   # Make functions accessible by Derelict.foo and private when included
   module_function
 
   # Include "logger" method to get a logger for this class
-  extend Logger
+  extend Utils::Logger
 
   # Creates a new Derelict instance for a Vagrant installation
   #
