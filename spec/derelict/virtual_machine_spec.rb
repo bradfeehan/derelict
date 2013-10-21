@@ -1,8 +1,8 @@
 require "spec_helper"
 
 describe Derelict::VirtualMachine do
-  let(:connection) { double("connection") }
-  let(:name) { double("name") }
+  let(:connection) { double("connection", :description => "test") }
+  let(:name) { double("name", :inspect => "testvm") }
 
   let(:vm) { Derelict::VirtualMachine.new connection, name }
   subject { vm }
@@ -11,6 +11,11 @@ describe Derelict::VirtualMachine do
     it "should succeed" do
       expect { subject }.to_not raise_error
     end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+    ]}
   end
 
   describe "#validate!" do
@@ -22,6 +27,13 @@ describe Derelict::VirtualMachine do
       it "should raise NotFound" do
         expect { subject }.to raise_error Derelict::VirtualMachine::NotFound
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+        "DEBUG virtualmachine: Starting validation for Derelict::VirtualMachine 'testvm' from test\n",
+        " WARN virtualmachine: Validation failed for Derelict::VirtualMachine 'testvm' from test: Invalid Derelict virtual machine: Virtual machine testvm not found\n",
+      ]}
     end
 
     context "when exists? is true" do
@@ -33,6 +45,13 @@ describe Derelict::VirtualMachine do
       it "should be chainable" do
         expect(subject).to be subject
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+        "DEBUG virtualmachine: Starting validation for Derelict::VirtualMachine 'testvm' from test\n",
+        " INFO virtualmachine: Successfully validated Derelict::VirtualMachine 'testvm' from test\n",
+      ]}
     end
   end
 
@@ -46,6 +65,11 @@ describe Derelict::VirtualMachine do
     it "should delegate to the status parser" do
       expect(subject).to be exists?
     end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+    ]}
   end
 
   describe "#state" do
@@ -57,21 +81,6 @@ describe Derelict::VirtualMachine do
 
     it "should delegate to the status parser" do
       expect(subject).to be state
-    end
-  end
-
-  describe "#status" do
-    let(:result) { double("result", :stdout => stdout) }
-    let(:stdout) { double("stdout") }
-    subject { vm.status }
-
-    before {
-      expect(connection).to receive(:execute!).with(:status).and_return(result)
-      expect(Derelict::Parser::Status).to receive(:new).with(stdout).and_return(:return_value)
-    }
-
-    it "should parse status data from the connection" do
-      expect(subject).to be :return_value
     end
   end
 
@@ -88,5 +97,42 @@ describe Derelict::VirtualMachine do
       let(:state) { :foo }
       it { should be false }
     end
+  end
+
+  describe "#up" do
+    let(:options) { Hash.new }
+    let(:result) { double("result") }
+    subject { vm.up options }
+
+    before do
+      expect(connection).to receive(:execute!).with(:up, name).and_return result
+    end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+      " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
+    ]}
+  end
+
+  describe "#status" do
+    let(:result) { double("result", :stdout => stdout) }
+    let(:stdout) { double("stdout") }
+    subject { vm.status }
+
+    before do
+      expect(connection).to receive(:execute!).with(:status).and_return(result)
+      expect(Derelict::Parser::Status).to receive(:new).with(stdout).and_return(:return_value)
+    end
+
+    it "should parse status data from the connection" do
+      expect(subject).to be :return_value
+    end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+      " INFO virtualmachine: Retrieving Vagrant status for Derelict::VirtualMachine 'testvm' from test\n",
+    ]}
   end
 end
