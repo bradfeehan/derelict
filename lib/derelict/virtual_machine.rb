@@ -7,6 +7,15 @@ module Derelict
     # Include "logger" method to get a logger for this class
     include Logger
 
+    COMMANDS = [
+      :up,
+      :halt,
+      :destroy,
+      :reload,
+      :suspend,
+      :resume,
+    ]
+
     attr_reader :connection
     attr_reader :name
 
@@ -59,80 +68,34 @@ module Derelict
       @running ||= (state == :running)
     end
 
-    # Start this Vagrant virtual machine
+    # Add methods for each command
     #
-    #   * options: Hash of options
-    #     * log: Should the log output be printed? (optional, defaults
-    #            to false)
-    def up!(options = {})
-      logger.info "Bringing up #{description}"
-      options = {:log => false}.merge(options)
-      connection.execute! :up, name, &shell_log_block(options[:log])
-    end
+    # A method is defined for each of the symbols in COMMANDS. The
+    # method name will be the symbol with an added bang (!). For
+    # example, #up!, #halt!, etc.
+    #
+    # Each method takes an options hash as an argument. For example:
+    #
+    #   vm.up! :log => true
+    #
+    # This example will run the "up" command with logging enabled. The
+    # option keys can optionally include any of the following symbols:
+    #
+    #     * log: Should the log output be printed? (defaults to false)
+    COMMANDS.each do |command|
+      define_method "#{command}!" do |options|
+        # Log message if there's one for this command
+        message = log_message_for command
+        logger.info message unless message.nil?
 
-    # Halt this Vagrant virtual machine
-    #
-    #   * options: Hash of options
-    #     * log: Should the log output be printed? (optional, defaults
-    #            to false)
-    def halt!(options = {})
-      logger.info "Halting #{description}"
-      options = {:log => false}.merge(options)
-      connection.execute! :halt, name, &shell_log_block(options[:log])
-    end
+        # Set defaults for the options hash
+        options = {:log => false}.merge options
 
-    # Destroy this Vagrant virtual machine
-    #
-    # There is no interactive confirmation -- this method uses the
-    # --force option to "vagrant destroy", so it will be destroyed
-    # immediately.
-    #
-    # This will permanently delete the virtual machine. This generally
-    # shouldn't be a big deal, as it can be re-created using "up",
-    # however be aware that data is being deleted.
-    #
-    #   * options: Hash of options
-    #     * log: Should the log output be printed? (optional, defaults
-    #            to false)
-    def destroy!(options = {})
-      logger.info "Destroying #{description}"
-      options = {:log => false}.merge(options)
-      connection.execute! :destroy, name, '--force', &shell_log_block(options[:log])
-    end
-
-    # Reload this Vagrant virtual machine
-    #
-    # Reloading involves a "halt" (shut down) followed by "up" (boot).
-    #
-    #   * options: Hash of options
-    #     * log: Should the log output be printed? (optional, defaults
-    #            to false)
-    def reload!(options = {})
-      logger.info "Reloading #{description}"
-      options = {:log => false}.merge(options)
-      connection.execute! :reload, name, &shell_log_block(options[:log])
-    end
-
-    # Suspend this Vagrant virtual machine
-    #
-    #   * options: Hash of options
-    #     * log: Should the log output be printed? (optional, defaults
-    #            to false)
-    def suspend!(options = {})
-      logger.info "Suspending #{description}"
-      options = {:log => false}.merge(options)
-      connection.execute! :suspend, name, &shell_log_block(options[:log])
-    end
-
-    # Resume this Vagrant virtual machine
-    #
-    #   * options: Hash of options
-    #     * log: Should the log output be printed? (optional, defaults
-    #            to false)
-    def resume!(options = {})
-      logger.info "Resuming #{description}"
-      options = {:log => false}.merge(options)
-      connection.execute! :resume, name, &shell_log_block(options[:log])
+        # Execute the command, optionally logging output
+        arguments = arguments_for command
+        log_block = shell_log_block options[:log]
+        connection.execute! command, name, *arguments, &log_block
+      end
     end
 
     # Retrieves the (parsed) status from the connection
@@ -160,6 +123,33 @@ module Derelict
         return nil unless log
         @shell_log_block ||= Proc.new do |line|
           logger(:type => :external).info line
+        end
+      end
+
+      # Retrieves the arguments for a particular action
+      #
+      #   * action: The symbol representing the action (one of :up,
+      #             :halt, :destroy, :reload, :suspend, :resume)
+      def arguments_for(action)
+        case action
+          when :destroy then ['--force']
+          else []
+        end
+      end
+
+      # Retrieves the correct log message for a particular action
+      #
+      #   * action: The symbol representing the action (one of :up,
+      #             :halt, :destroy, :reload, :suspend, :resume)
+      def log_message_for(action)
+        case action
+          when :up      then "Bringing up #{description}"
+          when :halt    then "Halting #{description}"
+          when :destroy then "Destroying #{description}"
+          when :reload  then "Reloading #{description}"
+          when :suspend then "Suspending #{description}"
+          when :resume  then "Resuming #{description}"
+          else nil
         end
       end
   end
