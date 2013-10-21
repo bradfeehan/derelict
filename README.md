@@ -82,6 +82,8 @@ vm.up!                   # runs "vagrant up" for this VM only
 vm.halt!                 # runs "vagrant halt" for this VM only
 vm.destroy!              # runs "vagrant destroy --force" for this VM
 vm.reload!               # runs "vagrant reload" for this VM only
+vm.suspend!              # runs "vagrant suspend" for this VM only
+vm.resume!               # runs "vagrant resume" for this VM only
 ```
 
 
