@@ -25,6 +25,13 @@ describe Derelict::Parser::Status do
     describe "#vm_names" do
       subject { Derelict::Parser::Status.new(output).vm_names }
       it { should eq [:foo] }
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing states from VM list using Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing VM list from output using Derelict::Parser::Status instance\n",
+      ]}
     end
 
     describe "#exists?" do
@@ -35,6 +42,11 @@ describe Derelict::Parser::Status do
       it "should return false for unknown VM" do
         expect(subject.exists?(:bar)).to be false
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+      ]}
     end
 
     describe "#state" do
@@ -46,6 +58,11 @@ describe Derelict::Parser::Status do
         type = Derelict::VirtualMachine::NotFound
         expect { subject.state(:bar) }.to raise_error type
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+      ]}
     end
   end
 
@@ -66,6 +83,13 @@ describe Derelict::Parser::Status do
     describe "#vm_names" do
       subject { Derelict::Parser::Status.new(output).vm_names }
       it { should eq [:foo, :bar] }
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing states from VM list using Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing VM list from output using Derelict::Parser::Status instance\n",
+      ]}
     end
 
     describe "#exists?" do
@@ -80,6 +104,11 @@ describe Derelict::Parser::Status do
       it "should return false for unknown VM" do
         expect(subject.exists?(:baz)).to be false
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+      ]}
     end
 
     describe "#state" do
@@ -95,6 +124,11 @@ describe Derelict::Parser::Status do
         type = Derelict::VirtualMachine::NotFound
         expect { subject.state(:baz) }.to raise_error type
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+      ]}
     end
   end
 
@@ -116,6 +150,15 @@ describe Derelict::Parser::Status do
         ].join
         expect { subject }.to raise_error type, message
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing states from VM list using Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing VM list from output using Derelict::Parser::Status instance\n",
+        " WARN status: List parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
+        " WARN status: State parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
+      ]}
     end
 
     describe "#state" do
@@ -128,6 +171,15 @@ describe Derelict::Parser::Status do
         ].join
         expect { subject }.to raise_error type, message
       end
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing states from VM list using Derelict::Parser::Status instance\n",
+        "DEBUG status: Parsing VM list from output using Derelict::Parser::Status instance\n",
+        " WARN status: List parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
+        " WARN status: State parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
+      ]}
     end
   end
 
