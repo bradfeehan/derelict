@@ -1,7 +1,5 @@
-require "log4r"
-
 module Derelict
-  module Log4r
+  module Logger
     # A Log4r Outputter which stores all logs in an array
     #
     # Logs are stored in the internal array by #write. Logs can be

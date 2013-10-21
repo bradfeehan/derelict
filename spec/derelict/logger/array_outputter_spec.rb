@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe Derelict::Log4r::ArrayOutputter do
+describe Derelict::Logger::ArrayOutputter do
   let(:logger) { Log4r::Logger.new "test::array_outputter_spec" }
-  let(:outputter) { Derelict::Log4r::ArrayOutputter.new "test" }
+  let(:outputter) { Derelict::Logger::ArrayOutputter.new "test" }
   before { logger.outputters = [outputter] }
   subject { outputter }
 

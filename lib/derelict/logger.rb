@@ -1,6 +1,8 @@
 module Derelict
   # Provides a method to retrieve a logger
   module Logger
+    autoload :ArrayOutputter, "derelict/logger/array_outputter"
+
     # Retrieves the logger for this class
     def logger
       ::Log4r::Logger[logger_name] || ::Log4r::Logger.new(logger_name)
