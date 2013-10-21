@@ -81,6 +81,25 @@ module Derelict
       connection.execute! :halt, name, &shell_log_block(options[:log])
     end
 
+    # Destroy this Vagrant virtual machine
+    #
+    # There is no interactive confirmation -- this method uses the
+    # --force option to "vagrant destroy", so it will be destroyed
+    # immediately.
+    #
+    # This will permanently delete the virtual machine. This generally
+    # shouldn't be a big deal, as it can be re-created using "up",
+    # however be aware that data is being deleted.
+    #
+    #   * options: Hash of options
+    #     * log: Should the log output be printed? (optional, defaults
+    #            to false)
+    def destroy(options = {})
+      logger.info "Destroying #{description}"
+      options = {:log => false}.merge(options)
+      connection.execute! :destroy, name, '--force', &shell_log_block(options[:log])
+    end
+
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
