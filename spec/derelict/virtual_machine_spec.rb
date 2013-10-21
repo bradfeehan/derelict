@@ -244,6 +244,35 @@ describe Derelict::VirtualMachine do
     end
   end
 
+  describe "#resume!" do
+    let(:options) { Hash.new }
+    let(:result) { double("result") }
+    subject { vm.resume! options }
+
+    before do
+      expect(connection).to receive(:execute!).with(:resume, name).and_yield("foo").and_return result
+    end
+
+    context "with external logging disabled" do
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+        " INFO virtualmachine: Resuming Derelict::VirtualMachine 'testvm' from test\n",
+      ]}
+    end
+
+    context "with external logging enabled" do
+      let(:options) { {:log => true} }
+
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+        " INFO virtualmachine: Resuming Derelict::VirtualMachine 'testvm' from test\n",
+        " INFO external: foo\n",
+      ]}
+    end
+  end
+
   describe "#status" do
     let(:result) { double("result", :stdout => stdout) }
     let(:stdout) { double("stdout") }
