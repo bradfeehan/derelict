@@ -67,13 +67,7 @@ module Derelict
     def up(options = {})
       logger.info "Bringing up #{description}"
       options = {:log => false}.merge(options)
-
-      if options[:log]
-        # TODO: implement a real logging solution
-        connection.execute!(:up, name) {|line| print line }
-      else
-        connection.execute! :up, name
-      end
+      connection.execute! :up, name, &shell_log_block(options[:log])
     end
 
     # Retrieves the (parsed) status from the connection
@@ -91,5 +85,17 @@ module Derelict
     def description
       "Derelict::VirtualMachine '#{name}' from #{connection.description}"
     end
+
+    private
+      # A block that can be passed to #execute to log the output
+      #
+      #   * log: Whether the output should be logged (if false, the
+      #          resulting block will do nothing).
+      def shell_log_block(log)
+        return nil unless log
+        @shell_log_block ||= Proc.new do |line|
+          logger(:type => :external).info line
+        end
+      end
   end
 end

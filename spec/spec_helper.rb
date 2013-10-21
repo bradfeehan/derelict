@@ -2,6 +2,7 @@ require "derelict"
 require File.join(File.dirname(__FILE__), "support", "log_context")
 
 derelict_logger = Derelict.logger
+external_logger = Derelict.logger :type => :external
 array_outputter = Derelict::Logger::ArrayOutputter.new "rspec"
 
 RSpec.configure do |config|
@@ -14,6 +15,7 @@ RSpec.configure do |config|
 
     # Add the ArrayOutputter to the base Derelict logger
     derelict_logger.outputters = [array_outputter]
+    external_logger.outputters = [array_outputter]
   end
 
   # Forbid .should syntax

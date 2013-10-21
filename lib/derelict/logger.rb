@@ -6,11 +6,34 @@ module Derelict
     autoload :RawFormatter,   "derelict/logger/raw_formatter"
 
     # Retrieves the logger for this class
-    def logger
-      ::Log4r::Logger[logger_name] || ::Log4r::Logger.new(logger_name)
+    def logger(options = {})
+      options = {:type => :internal}.merge(options)
+
+      case options[:type].to_sym
+        when :external
+          external_logger
+        when :internal
+          find_or_create_logger(logger_name)
+        else raise InvalidType.new type
+      end
     end
 
     private
+      # Finds or creates a Logger with a particular fullname
+      def find_or_create_logger(fullname)
+        ::Log4r::Logger[fullname.to_s] || ::Log4r::Logger.new(fullname.to_s)
+      end
+
+      # Gets the "external" logger, used to print to stdout
+      def external_logger
+        @@external ||= find_or_create_logger("external").tap do |external|
+          logger.debug "Created external logger instance"
+          external.add(::Log4r::Outputter.stdout.tap do |outputter|
+            outputter.formatter = RawFormatter.new
+          end)
+        end
+      end
+
       # Retrieves the name of the logger for this class
       #
       # By default, the name of the logger is just the lowercase
