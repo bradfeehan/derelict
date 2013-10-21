@@ -10,9 +10,15 @@ describe Derelict::Parser do
 
   describe "#initialize" do
     let(:output) { "the output" }
+    let(:description) { "test parser" }
 
     it "should store output" do
       expect(subject.output).to eq "the output"
     end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG parser: Successfully initialized Derelict::Parser (unknown type)\n",
+    ]}
   end
 end
