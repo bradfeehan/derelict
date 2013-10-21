@@ -24,7 +24,7 @@ describe Derelict::Parser::Status do
 
     describe "#vm_names" do
       subject { Derelict::Parser::Status.new(output).vm_names }
-      it { should eq [:foo] }
+      it { should eq Set[:foo] }
 
       include_context "logged messages"
       let(:expected_logs) {[
@@ -82,7 +82,7 @@ describe Derelict::Parser::Status do
 
     describe "#vm_names" do
       subject { Derelict::Parser::Status.new(output).vm_names }
-      it { should eq [:foo, :bar] }
+      it { should eq Set[:foo, :bar] }
 
       include_context "logged messages"
       let(:expected_logs) {[

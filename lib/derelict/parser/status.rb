@@ -18,9 +18,9 @@ module Derelict
 
     # Retrieves the names of all virtual machines in the output
     #
-    # The names are returned as an array of symbols.
+    # The names are returned as a Set of symbols.
     def vm_names
-      states.keys
+      Set[*states.keys]
     end
 
     # Determines if a particular virtual machine exists in the output
