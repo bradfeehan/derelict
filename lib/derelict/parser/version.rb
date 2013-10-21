@@ -9,10 +9,18 @@ module Derelict
     # Determines the version of Vagrant based on the output
     def version
       @version ||= (
+        logger.debug "Parsing version from output using #{description}"
         matches = output.match PARSE_VERSION_FROM_OUTPUT
         raise InvalidFormat.new output if matches.nil?
         matches.captures[0]
       )
+    end
+
+    # Provides a description of this Parser
+    #
+    # Mainly used for log messages.
+    def description
+      "Derelict::Parser::Version instance"
     end
   end
 end

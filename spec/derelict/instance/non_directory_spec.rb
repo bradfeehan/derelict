@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Instance::NonDirectory do
   subject { Derelict::Instance::NonDirectory.new "/foo/bar" }

@@ -1,4 +1,4 @@
-require "derelict"
+require "spec_helper"
 
 describe Derelict::Instance::Invalid do
   it "is autoloaded" do

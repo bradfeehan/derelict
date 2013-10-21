@@ -4,6 +4,9 @@ module Derelict
     autoload :Invalid,  "derelict/virtual_machine/invalid"
     autoload :NotFound, "derelict/virtual_machine/not_found"
 
+    # Include "logger" method to get a logger for this class
+    include Logger
+
     attr_reader :connection
     attr_reader :name
 
@@ -16,6 +19,7 @@ module Derelict
     def initialize(connection, name)
       @connection = connection
       @name = name
+      logger.debug "Successfully initialized #{description}"
     end
 
     # Validates the data used for this connection
@@ -26,8 +30,13 @@ module Derelict
     #     doesn't know about a virtual machine with the requested
     #     name
     def validate!
+      logger.debug "Starting validation for #{description}"
       raise NotFound.new name, connection unless exists?
+      logger.info "Successfully validated #{description}"
       self
+    rescue Derelict::VirtualMachine::Invalid => e
+      logger.warn "Validation failed for #{description}: #{e.message}"
+      raise
     end
 
     # Determines whether this Vagrant virtual machine exists
@@ -56,6 +65,7 @@ module Derelict
     #     * log: Should the log output be printed? (optional, defaults
     #            to false)
     def up(options = {})
+      logger.info "Bringing up #{description}"
       options = {:log => false}.merge(options)
 
       if options[:log]
@@ -69,9 +79,17 @@ module Derelict
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
+        logger.info "Retrieving Vagrant status for #{description}"
         output = connection.execute!(:status).stdout
         Derelict::Parser::Status.new(output)
       )
+    end
+
+    # Provides a description of this Connection
+    #
+    # Mainly used for log messages.
+    def description
+      "Derelict::VirtualMachine '#{name}' from #{connection.description}"
     end
   end
 end
