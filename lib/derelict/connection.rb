@@ -80,7 +80,7 @@ module Derelict
       # Handles the logging that should occur for a call to #execute(!)
       def log_execute(subcommand, *arguments)
         logger.debug do
-          "Executing #{subcommand.to_s} #{arguments} on #{description}"
+          "Executing #{subcommand} #{arguments.inspect} on #{description}"
         end
       end
   end
