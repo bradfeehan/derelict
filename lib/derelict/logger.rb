@@ -3,6 +3,7 @@ module Derelict
   module Logger
     autoload :ArrayOutputter, "derelict/logger/array_outputter"
     autoload :InvalidType,    "derelict/logger/invalid_type"
+    autoload :RawFormatter,   "derelict/logger/raw_formatter"
 
     # Retrieves the logger for this class
     def logger
