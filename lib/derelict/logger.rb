@@ -2,6 +2,7 @@ module Derelict
   # Provides a method to retrieve a logger
   module Logger
     autoload :ArrayOutputter, "derelict/logger/array_outputter"
+    autoload :InvalidType,    "derelict/logger/invalid_type"
 
     # Retrieves the logger for this class
     def logger
