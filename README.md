@@ -74,7 +74,10 @@ vm = connection.vm(:web) # "vm" is a Derelict::VirtualMachine
 vm.exists?               # does the connection define a "web" VM?
 vm.state                 # current VM state (:running, :not_created...)
 vm.running?              # whether the VM is currently running or not
-vm.up                    # runs "vagrant up" for this VM only
+vm.up!                   # runs "vagrant up" for this VM only
+vm.halt!                 # runs "vagrant halt" for this VM only
+vm.destroy!              # runs "vagrant destroy --force" for this VM
+vm.reload!               # runs "vagrant reload" for this VM only
 ```
 
 
