@@ -64,7 +64,7 @@ module Derelict
     #   * options: Hash of options
     #     * log: Should the log output be printed? (optional, defaults
     #            to false)
-    def up(options = {})
+    def up!(options = {})
       logger.info "Bringing up #{description}"
       options = {:log => false}.merge(options)
       connection.execute! :up, name, &shell_log_block(options[:log])
@@ -75,7 +75,7 @@ module Derelict
     #   * options: Hash of options
     #     * log: Should the log output be printed? (optional, defaults
     #            to false)
-    def halt(options = {})
+    def halt!(options = {})
       logger.info "Halting #{description}"
       options = {:log => false}.merge(options)
       connection.execute! :halt, name, &shell_log_block(options[:log])
@@ -94,7 +94,7 @@ module Derelict
     #   * options: Hash of options
     #     * log: Should the log output be printed? (optional, defaults
     #            to false)
-    def destroy(options = {})
+    def destroy!(options = {})
       logger.info "Destroying #{description}"
       options = {:log => false}.merge(options)
       connection.execute! :destroy, name, '--force', &shell_log_block(options[:log])
@@ -107,7 +107,7 @@ module Derelict
     #   * options: Hash of options
     #     * log: Should the log output be printed? (optional, defaults
     #            to false)
-    def reload(options = {})
+    def reload!(options = {})
       logger.info "Reloading #{description}"
       options = {:log => false}.merge(options)
       connection.execute! :reload, name, &shell_log_block(options[:log])

@@ -99,10 +99,10 @@ describe Derelict::VirtualMachine do
     end
   end
 
-  describe "#up" do
+  describe "#up!" do
     let(:options) { Hash.new }
     let(:result) { double("result") }
-    subject { vm.up options }
+    subject { vm.up! options }
 
     before do
       expect(connection).to receive(:execute!).with(:up, name).and_yield("foo").and_return result
@@ -128,10 +128,10 @@ describe Derelict::VirtualMachine do
     end
   end
 
-  describe "#halt" do
+  describe "#halt!" do
     let(:options) { Hash.new }
     let(:result) { double("result") }
-    subject { vm.halt options }
+    subject { vm.halt! options }
 
     before do
       expect(connection).to receive(:execute!).with(:halt, name).and_yield("foo").and_return result
@@ -157,10 +157,10 @@ describe Derelict::VirtualMachine do
     end
   end
 
-  describe "#destroy" do
+  describe "#destroy!" do
     let(:options) { Hash.new }
     let(:result) { double("result") }
-    subject { vm.destroy options }
+    subject { vm.destroy! options }
 
     before do
       expect(connection).to receive(:execute!).with(:destroy, name, '--force').and_yield("foo").and_return result
@@ -186,10 +186,10 @@ describe Derelict::VirtualMachine do
     end
   end
 
-  describe "#reload" do
+  describe "#reload!" do
     let(:options) { Hash.new }
     let(:result) { double("result") }
-    subject { vm.reload options }
+    subject { vm.reload! options }
 
     before do
       expect(connection).to receive(:execute!).with(:reload, name).and_yield("foo").and_return result
