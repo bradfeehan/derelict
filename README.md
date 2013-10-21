@@ -1,6 +1,7 @@
 # Derelict
 
 [![Build Status](https://travis-ci.org/bradfeehan/derelict.png?branch=master)](https://travis-ci.org/bradfeehan/derelict)
+[![Code Climate](https://codeclimate.com/github/bradfeehan/derelict.png)](https://codeclimate.com/github/bradfeehan/derelict)
 
 Provides a Ruby API to control [Vagrant][1] where Vagrant is installed
 via the Installer package on Mac OS X.
