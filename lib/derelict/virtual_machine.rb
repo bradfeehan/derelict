@@ -70,6 +70,17 @@ module Derelict
       connection.execute! :up, name, &shell_log_block(options[:log])
     end
 
+    # Halt this Vagrant virtual machine
+    #
+    #   * options: Hash of options
+    #     * log: Should the log output be printed? (optional, defaults
+    #            to false)
+    def halt(options = {})
+      logger.info "Halting #{description}"
+      options = {:log => false}.merge(options)
+      connection.execute! :halt, name, &shell_log_block(options[:log])
+    end
+
     # Retrieves the (parsed) status from the connection
     def status
       @status ||= (
