@@ -2,6 +2,8 @@ require "derelict/version"
 require "log4r"
 require "shell/executer"
 
+::Log4r::Logger["root"] # creates the level constants (INFO, etc).
+
 module Derelict
   autoload :Connection,     "derelict/connection"
   autoload :Exception,      "derelict/exception"
@@ -31,25 +33,34 @@ module Derelict
   # When in debug mode, Derelict will log to stderr. The debug level
   # can be controlled as well (which affects the verbosity of the
   # logging).
+  #
+  # Valid (symbol) keys for the options hash include:
+  #
+  #   * enabled: Whether debug mode should be enabled (defaults to true)
+  #   * level:   Allows setting a custom log level (defaults to INFO)
   def debug!(options = {})
-    ::Log4r::Logger["root"] # creates the level constants (INFO, etc).
+    options = debug_options_defaults.merge options
 
-    options = {
-      :enabled => true,
-      :level => ::Log4r::INFO,
-    }.merge options
+    logger.level = options[:level]
 
     if options[:enabled]
       stderr = ::Log4r::Outputter.stderr
       logger.add stderr unless logger.outputters.include? stderr
-      logger.level = options[:level]
       logger.info "enabling debug mode"
     else
       logger.info "disabling debug mode"
       logger.remove "stderr"
-      logger.level = ::Log4r::OFF
     end
 
     self
   end
+
+  private
+    # Retrieves the default values for the options hash for #debug!
+    def debug_options_defaults
+      {
+        :enabled => true,
+        :level => options[:enabled] ? ::Log4r::INFO : ::Log4r::OFF,
+      }
+    end
 end
