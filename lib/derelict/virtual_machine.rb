@@ -4,6 +4,9 @@ module Derelict
     autoload :Invalid,  "derelict/virtual_machine/invalid"
     autoload :NotFound, "derelict/virtual_machine/not_found"
 
+    # Include "memoize" class method to memoize methods
+    extend Memoist
+
     # Include "logger" method to get a logger for this class
     include Utils::Logger
 
@@ -53,20 +56,23 @@ module Derelict
     # Returns +true+ if the connection reports a virtual machine with
     # the requested name, otherwise returns +false+.
     def exists?
-      @exists ||= status.exists? name
+      status.exists? name
     end
+    memoize :exists?
 
     # Gets the current state of this Vagrant virtual machine
     #
     # The state is returned as a symbol, e.g. :running.
     def state
-      @state ||= status.state name
+      status.state name
     end
+    memoize :state
 
     # Determines whether this virtual machine is currently running
     def running?
-      @running ||= (state == :running)
+      (state == :running)
     end
+    memoize :running?
 
     # Add methods for each command
     #
@@ -93,19 +99,18 @@ module Derelict
 
         # Execute the command, optionally logging output
         arguments = arguments_for command
-        log_block = shell_log_block options[:log]
+        log_block = options[:log] ? shell_log_block : nil
         connection.execute! command, name, *arguments, &log_block
       end
     end
 
     # Retrieves the (parsed) status from the connection
     def status
-      @status ||= (
-        logger.info "Retrieving Vagrant status for #{description}"
-        output = connection.execute!(:status).stdout
-        Derelict::Parser::Status.new(output)
-      )
+      logger.info "Retrieving Vagrant status for #{description}"
+      output = connection.execute!(:status).stdout
+      Derelict::Parser::Status.new(output)
     end
+    memoize :status
 
     # Provides a description of this Connection
     #
@@ -116,15 +121,12 @@ module Derelict
 
     private
       # A block that can be passed to #execute to log the output
-      #
-      #   * log: Whether the output should be logged (if false, the
-      #          resulting block will do nothing).
-      def shell_log_block(log)
-        return nil unless log
-        @shell_log_block ||= Proc.new do |line|
+      def shell_log_block
+        Proc.new do |line|
           logger(:type => :external).info line
         end
       end
+      memoize :shell_log_block
 
       # Retrieves the arguments for a particular action
       #

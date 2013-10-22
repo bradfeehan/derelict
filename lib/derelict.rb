@@ -1,5 +1,6 @@
 require "derelict/version"
 require "log4r"
+require "memoist"
 require "shell/executer"
 
 ::Log4r::Logger["root"] # creates the level constants (INFO, etc).

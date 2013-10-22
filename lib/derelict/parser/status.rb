@@ -3,6 +3,9 @@ module Derelict
   class Parser::Status < Parser
     autoload :InvalidFormat, "derelict/parser/status/invalid_format"
 
+    # Include "memoize" class method to memoize methods
+    extend Memoist
+
     # Regexp to extract the VM list from the "vagrant status" output
     PARSE_LIST_FROM_OUTPUT = /\n\n((?:.*\n)+)\n/
 
@@ -53,7 +56,7 @@ module Derelict
     private
       # Retrieves the virtual machine list section of the output
       def vm_lines
-        @vm_lines ||= output.match(PARSE_LIST_FROM_OUTPUT).tap {|list|
+        output.match(PARSE_LIST_FROM_OUTPUT).tap {|list|
           logger.debug "Parsing VM list from output using #{description}"
           raise InvalidFormat.new "Couldn't find list of VMs" if list.nil?
         }.captures[0].lines
@@ -61,6 +64,7 @@ module Derelict
         logger.warn "List parsing failed for #{description}: #{e.message}"
         raise
       end
+      memoize :vm_lines
 
       # Retrieves the state data for all virtual machines in the output
       #
@@ -69,19 +73,18 @@ module Derelict
       # symbols have spaces converted to underscores (for convenience
       # when writing literals in other code).
       def states
-        @states ||= (
-          logger.debug "Parsing states from VM list using #{description}"
-          data = vm_lines.map {|l| l.match PARSE_STATE_FROM_LIST_ITEM }
-          message = "Couldn't parse VM list"
-          raise InvalidFormat.new message if data.any?(&:nil?)
-          Hash[data.map {|line| [
-            line.captures[0].gsub(/\s+/, "_").downcase.to_sym,
-            line.captures[1].gsub(/\s+/, "_").downcase.to_sym,
-          ] }]
-        )
+        logger.debug "Parsing states from VM list using #{description}"
+        data = vm_lines.map {|l| l.match PARSE_STATE_FROM_LIST_ITEM }
+        message = "Couldn't parse VM list"
+        raise InvalidFormat.new message if data.any?(&:nil?)
+        Hash[data.map {|line| [
+          line.captures[0].gsub(/\s+/, "_").downcase.to_sym,
+          line.captures[1].gsub(/\s+/, "_").downcase.to_sym,
+        ] }]
       rescue Derelict::Parser::Status::InvalidFormat => e
         logger.warn "State parsing failed for #{description}: #{e.message}"
         raise
       end
+      memoize :states
   end
 end

@@ -6,6 +6,9 @@ module Derelict
       # Logs are stored in the internal array by #write. Logs can be
       # cleared using #flush, which returns the flushed logs too.
       class ArrayOutputter < ::Log4r::Outputter
+        # Include "memoize" class method to memoize methods
+        extend Memoist
+
         # Force the outputter to receive and store all levels of messages
         def level
           ::Log4r::ALL
@@ -13,8 +16,9 @@ module Derelict
 
         # The internal array of messages
         def messages
-          @messages ||= []
+          []
         end
+        memoize :messages
 
         # Clear internal log messages array and return the erased data
         def flush

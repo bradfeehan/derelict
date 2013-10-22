@@ -7,6 +7,9 @@ module Derelict
     autoload :NonDirectory,  "derelict/instance/non_directory"
     autoload :NotFound,      "derelict/instance/not_found"
 
+    # Include "memoize" class method to memoize methods
+    extend Memoist
+
     # Include "logger" method to get a logger for this class
     include Utils::Logger
 
@@ -48,12 +51,11 @@ module Derelict
 
     # Determines the version of this Vagrant instance
     def version
-      @version ||= (
-        logger.info "Determining Vagrant version for #{description}"
-        output = execute!("--version").stdout
-        Derelict::Parser::Version.new(output).version
-      )
+      logger.info "Determining Vagrant version for #{description}"
+      output = execute!("--version").stdout
+      Derelict::Parser::Version.new(output).version
     end
+    memoize :version
 
     # Executes a Vagrant subcommand using this instance
     #
@@ -103,10 +105,12 @@ module Derelict
     private
       # Retrieves the path to the vagrant binary for this instance
       def vagrant
-        @vagrant ||= File.join(@path, "bin", "vagrant").tap do |vagrant|
+        File.join(@path, "bin", "vagrant").tap do |vagrant|
           logger.debug "Vagrant binary for #{description} is '#{vagrant}'"
         end
       end
+      memoize :vagrant
+
 
       # Constructs the command to execute a Vagrant subcommand
       #

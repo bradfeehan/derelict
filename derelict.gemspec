@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "log4r"
+  spec.add_runtime_dependency "memoist"
   spec.add_runtime_dependency "shell-executer"
 
   spec.add_development_dependency "bundler", "~> 1.3"
