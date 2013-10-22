@@ -41,11 +41,9 @@ module Derelict
   #   * level:   Allows setting a custom log level (defaults to INFO)
   def debug!(options = {})
     options = debug_options_defaults.merge options
-
-    logger.level = options[:level]
+    logger.level = options[:enabled] ? options[:level] : ::Log4r::OFF
 
     if options[:enabled]
-      stderr = ::Log4r::Outputter.stderr
       logger.add stderr unless logger.outputters.include? stderr
       logger.info "enabling debug mode"
     else
@@ -58,10 +56,14 @@ module Derelict
 
   private
     # Retrieves the default values for the options hash for #debug!
-    def debug_options_defaults
+    def self.debug_options_defaults
       {
         :enabled => true,
-        :level => options[:enabled] ? ::Log4r::INFO : ::Log4r::OFF,
+        :level => ::Log4r::INFO,
       }
+    end
+
+    def self.stderr
+      ::Log4r::Outputter.stderr
     end
 end
