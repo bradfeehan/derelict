@@ -1,3 +1,6 @@
+require "coveralls"
+Coveralls.wear!
+
 require "derelict"
 require File.join(File.dirname(__FILE__), "support", "log_context")
 
