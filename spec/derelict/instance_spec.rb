@@ -73,7 +73,6 @@ describe Derelict::Instance do
         let(:expected_logs) {[
           "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
           "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
-          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: directory doesn't exist: /foo/bar\n",
         ]}
       end
 
@@ -91,7 +90,6 @@ describe Derelict::Instance do
         let(:expected_logs) {[
           "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
           "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
-          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: expected directory, found file: /foo/bar\n",
         ]}
       end
 
@@ -111,7 +109,6 @@ describe Derelict::Instance do
           "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
           "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
           "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
-          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: 'vagrant' binary not found at /foo/bar/bin/vagrant\n",
         ]}
       end
 
@@ -132,7 +129,6 @@ describe Derelict::Instance do
           "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
           "DEBUG instance: Starting validation for Derelict::Instance at '/foo/bar'\n",
           "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
-          " WARN instance: Validation failed for Derelict::Instance at '/foo/bar': Invalid Derelict instance: 'vagrant' binary not found at /foo/bar/bin/vagrant\n",
         ]}
       end
     end

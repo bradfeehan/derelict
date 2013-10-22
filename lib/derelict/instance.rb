@@ -44,9 +44,6 @@ module Derelict
       raise MissingBinary.new vagrant unless File.executable? vagrant
       logger.info "Successfully validated #{description}"
       self
-    rescue Derelict::Instance::Invalid => e
-      logger.warn "Validation failed for #{description}: #{e.message}"
-      raise
     end
 
     # Determines the version of this Vagrant instance

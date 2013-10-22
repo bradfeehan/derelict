@@ -146,7 +146,7 @@ describe Derelict::Parser::Status do
         type = Derelict::Parser::Status::InvalidFormat
         message = [
           "Output from 'vagrant status' was in an unexpected format: ",
-          "Couldn't find list of VMs",
+          "Couldn't find VM list",
         ].join
         expect { subject }.to raise_error type, message
       end
@@ -156,8 +156,6 @@ describe Derelict::Parser::Status do
         "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
         "DEBUG status: Parsing states from VM list using Derelict::Parser::Status instance\n",
         "DEBUG status: Parsing VM list from output using Derelict::Parser::Status instance\n",
-        " WARN status: List parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
-        " WARN status: State parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
       ]}
     end
 
@@ -167,7 +165,7 @@ describe Derelict::Parser::Status do
         type = Derelict::Parser::Status::InvalidFormat
         message = [
           "Output from 'vagrant status' was in an unexpected format: ",
-          "Couldn't find list of VMs",
+          "Couldn't find VM list",
         ].join
         expect { subject }.to raise_error type, message
       end
@@ -177,8 +175,6 @@ describe Derelict::Parser::Status do
         "DEBUG status: Successfully initialized Derelict::Parser::Status instance\n",
         "DEBUG status: Parsing states from VM list using Derelict::Parser::Status instance\n",
         "DEBUG status: Parsing VM list from output using Derelict::Parser::Status instance\n",
-        " WARN status: List parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
-        " WARN status: State parsing failed for Derelict::Parser::Status instance: Output from 'vagrant status' was in an unexpected format: Couldn't find list of VMs\n",
       ]}
     end
   end

@@ -30,9 +30,6 @@ module Derelict
       raise NotFound.new path unless File.exists? path
       logger.info "Successfully validated #{description}"
       self
-    rescue Derelict::Connection::Invalid => e
-      logger.warn "Validation failed for #{description}: #{e.message}"
-      raise
     end
 
     # Executes a Vagrant subcommand using this connection

@@ -46,9 +46,6 @@ module Derelict
       raise NotFound.new name, connection unless exists?
       logger.info "Successfully validated #{description}"
       self
-    rescue Derelict::VirtualMachine::Invalid => e
-      logger.warn "Validation failed for #{description}: #{e.message}"
-      raise
     end
 
     # Determines whether this Vagrant virtual machine exists

@@ -58,11 +58,8 @@ module Derelict
       def vm_lines
         output.match(PARSE_LIST_FROM_OUTPUT).tap {|list|
           logger.debug "Parsing VM list from output using #{description}"
-          raise InvalidFormat.new "Couldn't find list of VMs" if list.nil?
+          raise InvalidFormat.new "Couldn't find VM list" if list.nil?
         }.captures[0].lines
-      rescue Derelict::Parser::Status::InvalidFormat => e
-        logger.warn "List parsing failed for #{description}: #{e.message}"
-        raise
       end
       memoize :vm_lines
 
@@ -74,17 +71,19 @@ module Derelict
       # when writing literals in other code).
       def states
         logger.debug "Parsing states from VM list using #{description}"
-        data = vm_lines.map {|l| l.match PARSE_STATE_FROM_LIST_ITEM }
-        message = "Couldn't parse VM list"
-        raise InvalidFormat.new message if data.any?(&:nil?)
-        Hash[data.map {|line| [
-          line.captures[0].gsub(/\s+/, "_").downcase.to_sym,
-          line.captures[1].gsub(/\s+/, "_").downcase.to_sym,
-        ] }]
-      rescue Derelict::Parser::Status::InvalidFormat => e
-        logger.warn "State parsing failed for #{description}: #{e.message}"
-        raise
+        vm_lines.inject Hash.new do |hash, line|
+          hash.merge! parse_line(line.match PARSE_STATE_FROM_LIST_ITEM)
+        end
       end
       memoize :states
+
+      def parse_line(match)
+        raise InvalidFormat.new "Couldn't parse VM list" if match.nil?
+        Hash[*match.captures[0..1].map {|value| sanitize value }]
+      end
+
+      def sanitize(value)
+        value.to_s.gsub(/\s+/, "_").downcase.to_sym
+      end
   end
 end

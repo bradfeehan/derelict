@@ -32,7 +32,6 @@ describe Derelict::VirtualMachine do
       let(:expected_logs) {[
         "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
         "DEBUG virtualmachine: Starting validation for Derelict::VirtualMachine 'testvm' from test\n",
-        " WARN virtualmachine: Validation failed for Derelict::VirtualMachine 'testvm' from test: Invalid Derelict virtual machine: Virtual machine testvm not found\n",
       ]}
     end
 
