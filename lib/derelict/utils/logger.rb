@@ -22,14 +22,14 @@ module Derelict
       private
         # Finds or creates a Logger with a particular fullname
         def find_or_create_logger(fullname)
-          ::Log4r::Logger[fullname.to_s] || ::Log4r::Logger.new(fullname.to_s)
+          Log4r::Logger[fullname.to_s] || Log4r::Logger.new(fullname.to_s)
         end
 
         # Gets the "external" logger, used to print to stdout
         def external_logger
           @@external ||= find_or_create_logger("external").tap do |external|
             logger.debug "Created external logger instance"
-            external.add(::Log4r::Outputter.stdout.tap do |outputter|
+            external.add(Log4r::Outputter.stdout.tap do |outputter|
               outputter.formatter = RawFormatter.new
             end)
           end

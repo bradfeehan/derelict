@@ -1,7 +1,7 @@
 module Derelict
   class Instance
     # Represents an invalid instance, which can't be used with Derelict
-    class Invalid < ::Derelict::Exception
+    class Invalid < Derelict::Exception
       include Derelict::Exception::OptionalReason
 
       private

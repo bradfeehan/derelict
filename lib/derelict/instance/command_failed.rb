@@ -1,7 +1,7 @@
 module Derelict
   class Instance
     # Represents an invalid instance, which can't be used with Derelict
-    class CommandFailed < ::Derelict::Exception
+    class CommandFailed < Derelict::Exception
       # Initializes a new instance of this exception, with a reason
       #
       #   * reason: The result (Shell::Executer) for the command that

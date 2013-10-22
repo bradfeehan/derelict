@@ -3,7 +3,7 @@ require "log4r"
 require "memoist"
 require "shell/executer"
 
-::Log4r::Logger["root"] # creates the level constants (INFO, etc).
+Log4r::Logger["root"] # creates the level constants (INFO, etc).
 
 module Derelict
   autoload :Connection,     "derelict/connection"
@@ -40,7 +40,7 @@ module Derelict
   #   * level:   Allows setting a custom log level (defaults to INFO)
   def debug!(options = {})
     options = debug_options_defaults.merge options
-    logger.level = options[:enabled] ? options[:level] : ::Log4r::OFF
+    logger.level = options[:enabled] ? options[:level] : Log4r::OFF
 
     if options[:enabled]
       logger.add stderr unless logger.outputters.include? stderr
@@ -58,11 +58,11 @@ module Derelict
     def self.debug_options_defaults
       {
         :enabled => true,
-        :level => ::Log4r::INFO,
+        :level => Log4r::INFO,
       }
     end
 
     def self.stderr
-      ::Log4r::Outputter.stderr
+      Log4r::Outputter.stderr
     end
 end

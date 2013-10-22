@@ -1,7 +1,7 @@
 module Derelict
   class Connection
     # Represents an invalid connection, which Derelict can't use
-    class Invalid < ::Derelict::Exception
+    class Invalid < Derelict::Exception
       include Derelict::Exception::OptionalReason
 
       private
