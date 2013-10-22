@@ -1,6 +1,7 @@
 # Derelict
 
 [![Build Status](https://travis-ci.org/bradfeehan/derelict.png?branch=master)](https://travis-ci.org/bradfeehan/derelict)
+[![Coverage Status](https://coveralls.io/repos/bradfeehan/derelict/badge.png)](https://coveralls.io/r/bradfeehan/derelict)
 [![Code Climate](https://codeclimate.com/github/bradfeehan/derelict.png)](https://codeclimate.com/github/bradfeehan/derelict)
 [![Dependency Status](https://gemnasium.com/bradfeehan/derelict.png)](https://gemnasium.com/bradfeehan/derelict)
 
