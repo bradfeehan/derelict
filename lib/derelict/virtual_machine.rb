@@ -95,9 +95,8 @@ module Derelict
         options = {:log => false}.merge options
 
         # Execute the command, optionally logging output
-        arguments = arguments_for command
         log_block = options[:log] ? shell_log_block : nil
-        connection.execute! command, name, *arguments, &log_block
+        connection.execute! command, name, *arguments_for(command), &log_block
       end
     end
 
