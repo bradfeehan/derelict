@@ -25,7 +25,7 @@ module Derelict
         # This needs to be overridden in child classes in order to
         # customize the default error message.
         def default_message
-          raise NotImplementedError "#default_message not defined"
+          raise NotImplementedError.new "#default_message not defined"
         end
     end
   end
