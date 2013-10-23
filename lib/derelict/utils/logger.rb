@@ -15,7 +15,7 @@ module Derelict
             external_logger
           when :internal
             find_or_create_logger(logger_name)
-          else raise InvalidType.new type
+          else raise InvalidType.new options[:type]
         end
       end
 
