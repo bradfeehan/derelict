@@ -116,10 +116,9 @@ module Derelict
       def command(subcommand, *arguments)
         args = [vagrant, subcommand.to_s, arguments].flatten
         args.map {|a| Shellwords.escape a }.join(' ').tap do |command|
-          logger.debug [
-            "Generated command '#{command}' from subcommand ",
-            "'#{subcommand.to_s}' with arguments #{arguments.inspect}",
-          ].join
+          logger.debug "Generated command '#{command}' from " +
+            "subcommand '#{subcommand.to_s}' with arguments " +
+            arguments.inspect
         end
       end
   end
