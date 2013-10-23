@@ -133,33 +133,94 @@ describe Derelict::Instance do
       end
     end
 
-    describe "#execute" do
-      let(:arg) { "/foo/bar/bin/vagrant test arg\\ 1" }
-      let(:result) {
-        double("result", {
-          :stdout => "stdout\n",
-          :stderr => "stderr\n",
-          :success? => true,
-        })
-      }
+    describe "#connect" do
+      let(:connection) { double("connection") }
+      let(:connection_path) { double("connection_path", :inspect => "connection_path") }
+      subject { instance.connect connection_path }
+      before do
+        con = Derelict::Connection
+        args = [instance, connection_path]
+        expect(con).to receive(:new).with(*args).and_return(connection)
+        expect(connection).to receive(:validate!).and_return(connection)
+      end
 
-      before {
-        expect(Shell).to receive(:execute).with(arg).and_return(result)
-      }
-
-      subject { instance.execute(:test, "arg 1") }
-
-      its(:stdout) { should eq "stdout\n" }
-      its(:stderr) { should eq "stderr\n" }
-      its(:success?) { should be true }
+      it { should be connection }
 
       include_context "logged messages"
       let(:expected_logs) {[
         "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
-        "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
-        "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
-        "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
+        " INFO instance: Creating connection for 'connection_path' by Derelict::Instance at '/foo/bar'\n",
       ]}
+    end
+
+    context "with mock Shell" do
+      before do
+        cmd = "/foo/bar/bin/vagrant test arg\\ 1"
+        expect(Shell).to receive(:execute).with(cmd).and_return(result)
+      end
+
+      let(:result) do
+        double("result", {
+          :stdout => "stdout\n",
+          :stderr => "stderr\n",
+          :success? => success,
+        })
+      end
+
+      let(:success) { double("success") }
+
+      describe "#execute" do
+        subject { instance.execute :test, "arg 1" }
+        its(:stdout) { should eq "stdout\n" }
+        its(:stderr) { should eq "stderr\n" }
+        its(:success?) { should be success }
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+          "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+          "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
+          "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
+        ]}
+      end
+
+      describe "#execute!" do
+        subject { instance.execute! :test, "arg 1" }
+
+        context "on success" do
+          let(:success) { true }
+
+          its(:stdout) { should eq "stdout\n" }
+          its(:stderr) { should eq "stderr\n" }
+          its(:success?) { should be true }
+
+          include_context "logged messages"
+          let(:expected_logs) {[
+            "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+            "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+            "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
+            "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
+          ]}
+        end
+
+        context "on failure" do
+          let(:success) { false }
+
+          it "should raise CommandFailed" do
+            expect { subject }.to raise_error Derelict::Instance::CommandFailed
+          end
+
+          include_context "logged messages"
+          let(:expected_logs) {[
+            "DEBUG instance: Successfully initialized Derelict::Instance at '/foo/bar'\n",
+            "DEBUG instance: Vagrant binary for Derelict::Instance at '/foo/bar' is '/foo/bar/bin/vagrant'\n",
+            "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
+            "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
+            "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
+            " WARN instance: Command /foo/bar/bin/vagrant test arg\\ 1 failed: Error executing Vagrant command '/foo/bar/bin/vagrant test arg\\ 1'\n",
+          ]}
+        end
+      end
     end
   end
 end
