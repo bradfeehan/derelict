@@ -1,5 +1,6 @@
 # Derelict
 
+[![Gem Version](https://badge.fury.io/rb/derelict.png)](http://badge.fury.io/rb/derelict)
 [![Build Status](https://travis-ci.org/bradfeehan/derelict.png?branch=master)](https://travis-ci.org/bradfeehan/derelict)
 [![Coverage Status](https://coveralls.io/repos/bradfeehan/derelict/badge.png)](https://coveralls.io/r/bradfeehan/derelict)
 [![Code Climate](https://codeclimate.com/github/bradfeehan/derelict.png)](https://codeclimate.com/github/bradfeehan/derelict)
