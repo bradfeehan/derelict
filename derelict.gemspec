@@ -47,4 +47,15 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "its"
+
+  # When running on Travis CI, any passing builds will be deployed
+  # (i.e. pushed to RubyGems). This changes the version number so that
+  # these deployments are marked as pre-release versions (which will
+  # occur if the version number has a letter in it, so we add
+  # "travis" followed by the job number to the version string).
+  # So version 1.2.3 will be marked as (e.g.) "1.2.4.travis.567".
+  if ENV["TRAVIS"]
+    build = ENV["TRAVIS_JOB_NUMBER"].split(".").first
+    spec.version = "#{spec.version.to_s.succ}.travis.#{build}"
+  end
 end

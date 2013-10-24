@@ -3,3 +3,11 @@ rvm:
   - 1.8.7
   - 1.9.3
   - 2.0.0
+deploy:
+  provider: rubygems
+  api_key:
+    secure: lm8VbzXJIylbk3bHC5KBU7x0zI5zDHgOaYUkrc4z8R2gjdW9RLAoX8dwJ0N2FEX24zMf3s1fPT4dg70YD2S7FnVy3zan25BP2C2FKGkQ5kqRzV+gJCSD0Hwk8Yj5Breh1RF3xutV12asLq/+rltei7Fu6BnE2pQDk9/gGSCxILs=
+  gem: derelict
+  on:
+    repo: bradfeehan/derelict
+    ruby: 2.0.0
