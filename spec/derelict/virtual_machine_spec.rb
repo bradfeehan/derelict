@@ -103,27 +103,37 @@ describe Derelict::VirtualMachine do
     let(:result) { double("result") }
     subject { vm.up! options }
 
-    before do
-      expect(connection).to receive(:execute!).with(:up, name).and_yield("foo").and_return result
+    context "with wrong number of arguments" do
+      subject { vm.up! options, :extra }
+
+      it "should raise ArgumentError" do
+        expect { subject }.to raise_error ArgumentError
+      end
     end
 
-    context "with external logging disabled" do
-      include_context "logged messages"
-      let(:expected_logs) {[
-        "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
-        " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
-      ]}
-    end
+    context "with correct number of arguments" do
+      before do
+        expect(connection).to receive(:execute!).with(:up, name).and_yield("foo").and_return result
+      end
 
-    context "with external logging enabled" do
-      let(:options) { {:log => true} }
+      context "with external logging disabled" do
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+          " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
+        ]}
+      end
 
-      include_context "logged messages"
-      let(:expected_logs) {[
-        "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
-        " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
-        " INFO external: foo\n",
-      ]}
+      context "with external logging enabled" do
+        let(:options) { {:log => true} }
+
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
+          " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
+          " INFO external: foo\n",
+        ]}
+      end
     end
   end
 
