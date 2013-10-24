@@ -92,6 +92,8 @@ module Derelict
           raise ArgumentError.new message
         end
 
+        args = [{}] if args.length == 0
+
         # Log message if there's one for this command
         message = log_message_for command
         logger.info message unless message.nil?

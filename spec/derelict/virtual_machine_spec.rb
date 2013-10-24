@@ -103,7 +103,19 @@ describe Derelict::VirtualMachine do
     let(:result) { double("result") }
     subject { vm.up! options }
 
-    context "with wrong number of arguments" do
+    context "with too few arguments" do
+      before do
+        expect(connection).to receive(:execute!).with(:up, name)
+      end
+
+      subject { vm.up! }
+
+      it "should not raise ArgumentError" do
+        expect { subject }.to_not raise_error
+      end
+    end
+
+    context "with too many arguments" do
       subject { vm.up! options, :extra }
 
       it "should raise ArgumentError" do
