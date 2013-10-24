@@ -7,7 +7,7 @@ module Derelict
     extend Memoist
 
     # Regexp to extract the version from the "vagrant --version" output
-    PARSE_VERSION_FROM_OUTPUT = /^Vagrant v(?:ersion )?(.*)?$/
+    PARSE_VERSION_FROM_OUTPUT = /^Vagrant (?:v(?:ersion )?)?(.*)?$/
 
     # Determines the version of Vagrant based on the output
     def version
