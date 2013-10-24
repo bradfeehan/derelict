@@ -8,7 +8,7 @@ else
   # running on a compatible version.
   version_major = RbConfig::CONFIG["MAJOR"].to_i
   version_minor = RbConfig::CONFIG["MINOR"].to_i
-  if version_major >= 1 and version_minor >= 9
+  if version_major >= 2 or (version_major == 1 and version_minor >= 9)
     require "simplecov"
     SimpleCov.start
   end

@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
 
   version_major = RbConfig::CONFIG["MAJOR"].to_i
   version_minor = RbConfig::CONFIG["MINOR"].to_i
-  cane_supported = (version_major >= 1 and version_minor >= 9)
+  cane_supported = (version_major >= 2 or (version_major == 1 and version_minor >= 9))
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "cane" if cane_supported

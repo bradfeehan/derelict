@@ -8,7 +8,7 @@ end
 
 version_major = RbConfig::CONFIG["MAJOR"].to_i
 version_minor = RbConfig::CONFIG["MINOR"].to_i
-if version_major >= 1 and version_minor >= 9
+if version_major >= 2 or (version_major == 1 and version_minor >= 9)
   require "cane/rake_task"
 
   # Define "quality" task using Cane's built-in Rake task
