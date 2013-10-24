@@ -87,8 +87,8 @@ module Derelict
     #     * log: Should the log output be printed? (defaults to false)
     COMMANDS.each do |command|
       define_method :"#{command}!" do |*args|
-        if args.length != 1
-          message = "wrong number of arguments (#{args.length} for 1)"
+        if args.length > 1
+          message = "wrong number of arguments (#{args.length} for 0-1)"
           raise ArgumentError.new message
         end
 
