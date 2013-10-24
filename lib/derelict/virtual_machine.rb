@@ -86,13 +86,18 @@ module Derelict
     #
     #     * log: Should the log output be printed? (defaults to false)
     COMMANDS.each do |command|
-      define_method :"#{command}!" do |options = {}|
+      define_method :"#{command}!" do |*args|
+        if args.length != 1
+          message = "wrong number of arguments (#{args.length} for 1)"
+          raise ArgumentError.new message
+        end
+
         # Log message if there's one for this command
         message = log_message_for command
         logger.info message unless message.nil?
 
         # Set defaults for the options hash
-        options = {:log => false}.merge options
+        options = {:log => false}.merge args.first
 
         # Execute the command, optionally logging output
         log_block = options[:log] ? shell_log_block : nil
