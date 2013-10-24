@@ -86,7 +86,7 @@ module Derelict
     #
     #     * log: Should the log output be printed? (defaults to false)
     COMMANDS.each do |command|
-      define_method :"#{command}!" do |options|
+      define_method :"#{command}!" do |options = {}|
         # Log message if there's one for this command
         message = log_message_for command
         logger.info message unless message.nil?
