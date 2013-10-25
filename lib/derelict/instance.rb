@@ -76,9 +76,9 @@ module Derelict
       execute(subcommand, *arguments, &block).tap do |result|
         unless result.success?
           command = command(subcommand, *arguments)
-          exception = CommandFailed.new command
+          exception = CommandFailed.new command, result
           logger.warn "Command #{command} failed: #{exception.message}"
-          raise exception, result
+          raise exception
         end
       end
     end

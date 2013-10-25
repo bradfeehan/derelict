@@ -217,7 +217,7 @@ describe Derelict::Instance do
             "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
             "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
             "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
-            " WARN instance: Command /foo/bar/bin/vagrant test arg\\ 1 failed: Error executing Vagrant command '/foo/bar/bin/vagrant test arg\\ 1'\n",
+            " WARN instance: Command /foo/bar/bin/vagrant test arg\\ 1 failed: Error executing Vagrant command '/foo/bar/bin/vagrant test arg\\ 1', STDERR output:\nstderr\n\n",
           ]}
         end
       end
