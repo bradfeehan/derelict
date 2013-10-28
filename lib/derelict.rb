@@ -13,6 +13,7 @@ module Derelict
   autoload :Exception,      "derelict/exception"
   autoload :Instance,       "derelict/instance"
   autoload :Parser,         "derelict/parser"
+  autoload :Plugin,         "derelict/plugin"
   autoload :Utils,          "derelict/utils"
   autoload :VirtualMachine, "derelict/virtual_machine"
 
