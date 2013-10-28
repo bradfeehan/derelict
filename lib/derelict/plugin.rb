@@ -1,6 +1,8 @@
 module Derelict
   # Represents an individual Vagrant plugin at a particular version
   class Plugin
+    autoload :Manager, "derelict/plugin/manager"
+
     attr_reader :name, :version
 
     # Initializes a plugin with a particular name and version
