@@ -29,4 +29,42 @@ describe Derelict::Plugin::Manager do
 
     it { should be plugins }
   end
+
+  describe "#fetch" do
+    let(:foo) { double("foo", :name => "foo") }
+    let(:bar) { double("bar", :name => "bar") }
+    let(:plugins) { [foo, bar] }
+
+    let(:plugin_name) { double("plugin_name") }
+    subject { manager.fetch plugin_name }
+    before { expect(manager).to receive(:list).and_return(plugins) }
+
+    context "with known plugin" do
+      let(:plugin_name) { "foo" }
+      it { should be foo }
+    end
+
+    context "with unknown plugin" do
+      let(:plugin_name) { "qux" }
+      it "should raise NotFound" do
+        expect { subject }.to raise_error Derelict::Plugin::NotFound
+      end
+    end
+  end
+
+  describe "#installed?" do
+    let(:plugin_name) { double("plugin_name") }
+    let(:result) { double("result") }
+    subject { manager.installed? plugin_name }
+
+    context "with known plugin" do
+      before { expect(manager).to receive(:fetch).with(plugin_name).and_return(result) }
+      it { should be true }
+    end
+
+    context "with unknown plugin" do
+      before { expect(manager).to receive(:fetch).with(plugin_name).and_raise(Derelict::Plugin::NotFound.new plugin_name) }
+      it { should be false }
+    end
+  end
 end

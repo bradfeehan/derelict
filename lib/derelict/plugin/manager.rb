@@ -26,6 +26,24 @@ module Derelict
       end
       memoize :list
 
+      # Determines whether a particular plugin is installed
+      #
+      #   * plugin_name: Name of the plugin to look for (as a string)
+      def installed?(plugin_name)
+        fetch plugin_name; true
+      rescue Plugin::NotFound
+        false
+      end
+
+      # Retrieves a plugin with a particular name
+      #
+      #   * plugin_name: Name of the plugin to look for (as a string)
+      def fetch(plugin_name)
+        list.find {|plugin| plugin.name == plugin_name}.tap do |plugin|
+          raise Plugin::NotFound.new plugin_name if plugin.nil?
+        end
+      end
+
       # Provides a description of this Connection
       #
       # Mainly used for log messages.
