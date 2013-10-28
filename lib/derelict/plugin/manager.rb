@@ -2,6 +2,9 @@ module Derelict
   class Plugin
     # A class that handles managing plugins for a Vagrant instance
     class Manager
+      # Include "memoize" class method to memoize methods
+      extend Memoist
+
       # Include "logger" method to get a logger for this class
       include Utils::Logger
 
@@ -15,6 +18,13 @@ module Derelict
         @instance = instance
         logger.debug "Successfully initialized #{description}"
       end
+
+      # Retrieves the Set of currently installed plugins
+      def list
+        output = instance.execute!(:plugin, "list").stdout
+        Derelict::Parser::PluginList.new(output).plugins
+      end
+      memoize :list
 
       # Provides a description of this Connection
       #
