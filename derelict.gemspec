@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "log4r"
   spec.add_runtime_dependency "memoist"
   spec.add_runtime_dependency "shell-executer"
+  spec.add_runtime_dependency "mime-types", "<2.0" # for coveralls 1.8
 
 
   version_major = RbConfig::CONFIG["MAJOR"].to_i
