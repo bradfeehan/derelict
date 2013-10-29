@@ -124,8 +124,9 @@ describe Derelict::VirtualMachine do
     end
 
     context "with correct number of arguments" do
+      let(:args) { [:up, name] }
       before do
-        expect(connection).to receive(:execute!).with(:up, name).and_yield("foo").and_return result
+        expect(connection).to receive(:execute!).with(*args).and_yield("foo").and_return result
       end
 
       context "with external logging disabled" do
@@ -145,6 +146,12 @@ describe Derelict::VirtualMachine do
           " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
           " INFO external: foo\n",
         ]}
+
+        context "with color enabled" do
+          let(:options) { {:log => true, :color => true} }
+          let(:args) { [:up, name, '--color'] }
+          it { should be result }
+        end
       end
     end
   end
@@ -154,8 +161,9 @@ describe Derelict::VirtualMachine do
     let(:result) { double("result") }
     subject { vm.halt! options }
 
+    let(:args) { [:halt, name] }
     before do
-      expect(connection).to receive(:execute!).with(:halt, name).and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(*args).and_yield("foo").and_return result
     end
 
     context "with external logging disabled" do
@@ -175,6 +183,12 @@ describe Derelict::VirtualMachine do
         " INFO virtualmachine: Halting Derelict::VirtualMachine 'testvm' from test\n",
         " INFO external: foo\n",
       ]}
+
+      context "with color enabled" do
+        let(:options) { {:log => true, :color => true} }
+        let(:args) { [:halt, name, '--color'] }
+        it { should be result }
+      end
     end
   end
 
@@ -183,8 +197,9 @@ describe Derelict::VirtualMachine do
     let(:result) { double("result") }
     subject { vm.destroy! options }
 
+    let(:args) { [:destroy, name, '--force'] }
     before do
-      expect(connection).to receive(:execute!).with(:destroy, name, '--force').and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(*args).and_yield("foo").and_return result
     end
 
     context "with external logging disabled" do
@@ -204,6 +219,12 @@ describe Derelict::VirtualMachine do
         " INFO virtualmachine: Destroying Derelict::VirtualMachine 'testvm' from test\n",
         " INFO external: foo\n",
       ]}
+
+      context "with color enabled" do
+        let(:options) { {:log => true, :color => true} }
+        let(:args) { [:destroy, name, '--force', '--color'] }
+        it { should be result }
+      end
     end
   end
 

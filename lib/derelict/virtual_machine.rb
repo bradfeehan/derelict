@@ -99,11 +99,14 @@ module Derelict
         logger.info message unless message.nil?
 
         # Set defaults for the options hash
-        options = {:log => false}.merge args.first
+        options = {:log => false, :color => false}.merge args.first
 
         # Execute the command, optionally logging output
         log_block = options[:log] ? shell_log_block : nil
-        connection.execute! command, name, *arguments_for(command), &log_block
+
+        args = [command, name, *arguments_for(command)]
+        args << "--color" if options[:color]
+        connection.execute! *args, &log_block
       end
     end
 
