@@ -42,29 +42,43 @@ module Derelict
       # by Vagrant.
       #
       #   * plugin_name: Name of the plugin to install (as a string)
-      #   * version:     Particular version to install (optional,
+      #   * options:     Hash of options, valid keys:
+      #      * version:  Particular version to install (optional,
       #                  latest version will be installed if omitted)
-      def install(plugin_name, version = nil)
+      #      * log:      Whether to log the output (optional, defaults
+      #                  to false)
+      def install(plugin_name, options = {})
+        options = {:log => false, :version => nil}.merge(options)
         logger.info "Installing plugin '#{plugin_name}' using #{description}"
+
+        version = options[:version]
         command = [:plugin, "install", plugin_name]
         command.concat ["--plugin-version", version] unless version.nil?
-        instance.execute! *command
+
+        log_block = options[:log] ? shell_log_block : nil
+        instance.execute! *command, &log_block
       end
 
       # Uninstalls a particular Vagrant plugin
       #
       #   * plugin_name: Name of the plugin to uninstall (as a string)
-      def uninstall(plugin_name)
+      def uninstall(plugin_name, options = {})
+        options = {:log => false}.merge(options)
         logger.info "Uninstalling plugin '#{plugin_name}' using #{description}"
-        instance.execute! :plugin, "uninstall", plugin_name
+
+        log_block = options[:log] ? shell_log_block : nil
+        instance.execute! :plugin, "uninstall", plugin_name, &log_block
       end
 
       # Updates a particular Vagrant plugin
       #
       #   * plugin_name: Name of the plugin to update (as a string)
-      def update(plugin_name)
+      def update(plugin_name, options = {})
+        options = {:log => false}.merge(options)
         logger.info "Updating plugin '#{plugin_name}' using #{description}"
-        instance.execute! :plugin, "update", plugin_name
+
+        log_block = options[:log] ? shell_log_block : nil
+        instance.execute! :plugin, "update", plugin_name, &log_block
       end
 
       # Retrieves a plugin with a particular name
@@ -82,6 +96,15 @@ module Derelict
       def description
         "Derelict::Plugin::Manager for #{instance.description}"
       end
+
+      private
+        # A block that can be passed to #execute to log the output
+        def shell_log_block
+          Proc.new do |line|
+            logger(:type => :external).info line
+          end
+        end
+        memoize :shell_log_block
     end
   end
 end

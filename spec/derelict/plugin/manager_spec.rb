@@ -59,58 +59,97 @@ describe Derelict::Plugin::Manager do
   end
 
   describe "#install" do
+    let(:log) { true }
     let(:plugin_name) { double("plugin_name", :to_s => "test plugin") }
     let(:version) { double("version") }
     let(:result) { double("result") }
-    subject { manager.install plugin_name, version }
+    subject { manager.install plugin_name, :version => version, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:plugin, "install", plugin_name, '--plugin-version', version).and_return(result)
+      expect(instance).to receive(:execute!).with(:plugin, "install", plugin_name, '--plugin-version', version).and_yield("test").and_return(result)
     end
 
     it { should be result }
 
-    include_context "logged messages"
-    let(:expected_logs) {[
-      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
-      " INFO manager: Installing plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
-    ]}
+    context "with logging enabled" do
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+        " INFO manager: Installing plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+        " INFO external: test\n",
+      ]}
+    end
+
+    context "with logging disabled" do
+      let(:log) { false }
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+        " INFO manager: Installing plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+      ]}
+    end
   end
 
   describe "#uninstall" do
+    let(:log) { true }
     let(:plugin_name) { double("plugin_name", :to_s => "test plugin") }
     let(:result) { double("result") }
-    subject { manager.uninstall plugin_name }
+    subject { manager.uninstall plugin_name, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:plugin, "uninstall", plugin_name).and_return(result)
+      expect(instance).to receive(:execute!).with(:plugin, "uninstall", plugin_name).and_yield("test").and_return(result)
     end
 
     it { should be result }
 
-    include_context "logged messages"
-    let(:expected_logs) {[
-      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
-      " INFO manager: Uninstalling plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
-    ]}
+    context "with logging enabled" do
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+        " INFO manager: Uninstalling plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+        " INFO external: test\n",
+      ]}
+    end
+
+    context "with logging disabled" do
+      let(:log) { false }
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+        " INFO manager: Uninstalling plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+      ]}
+    end
   end
 
   describe "#update" do
+    let(:log) { true }
     let(:plugin_name) { double("plugin_name", :to_s => "test plugin") }
     let(:result) { double("result") }
-    subject { manager.update plugin_name }
+    subject { manager.update plugin_name, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:plugin, "update", plugin_name).and_return(result)
+      expect(instance).to receive(:execute!).with(:plugin, "update", plugin_name).and_yield("test").and_return(result)
     end
 
     it { should be result }
 
-    include_context "logged messages"
-    let(:expected_logs) {[
-      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
-      " INFO manager: Updating plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
-    ]}
+    context "with logging enabled" do
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+        " INFO manager: Updating plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+        " INFO external: test\n",
+      ]}
+    end
+
+    context "with logging disabled" do
+      let(:log) { false }
+      include_context "logged messages"
+      let(:expected_logs) {[
+        "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+        " INFO manager: Updating plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+      ]}
+    end
   end
 
 
