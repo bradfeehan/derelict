@@ -28,7 +28,91 @@ describe Derelict::Plugin::Manager do
     end
 
     it { should be plugins }
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+      " INFO manager: Retrieving Vagrant plugin list for Derelict::Plugin::Manager for test instance\n",
+    ]}
   end
+
+  describe "#installed?" do
+    let(:plugin_name) { double("plugin_name") }
+    let(:result) { double("result") }
+    subject { manager.installed? plugin_name }
+
+    context "with known plugin" do
+      before { expect(manager).to receive(:fetch).with(plugin_name).and_return(result) }
+      it { should be true }
+    end
+
+    context "with unknown plugin" do
+      before { expect(manager).to receive(:fetch).with(plugin_name).and_raise(Derelict::Plugin::NotFound.new plugin_name) }
+      it { should be false }
+    end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+      " INFO manager: Retrieving Vagrant plugin list for Derelict::Plugin::Manager for test instance\n",
+    ]}
+  end
+
+  describe "#install" do
+    let(:plugin_name) { double("plugin_name", :to_s => "test plugin") }
+    let(:version) { double("version") }
+    let(:result) { double("result") }
+    subject { manager.install plugin_name, version }
+
+    before do
+      expect(instance).to receive(:execute!).with(:plugin, "install", plugin_name, '--plugin-version', version).and_return(result)
+    end
+
+    it { should be result }
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+      " INFO manager: Installing plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+    ]}
+  end
+
+  describe "#uninstall" do
+    let(:plugin_name) { double("plugin_name", :to_s => "test plugin") }
+    let(:result) { double("result") }
+    subject { manager.uninstall plugin_name }
+
+    before do
+      expect(instance).to receive(:execute!).with(:plugin, "uninstall", plugin_name).and_return(result)
+    end
+
+    it { should be result }
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+      " INFO manager: Uninstalling plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+    ]}
+  end
+
+  describe "#update" do
+    let(:plugin_name) { double("plugin_name", :to_s => "test plugin") }
+    let(:result) { double("result") }
+    subject { manager.update plugin_name }
+
+    before do
+      expect(instance).to receive(:execute!).with(:plugin, "update", plugin_name).and_return(result)
+    end
+
+    it { should be result }
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+      " INFO manager: Updating plugin 'test plugin' using Derelict::Plugin::Manager for test instance\n",
+    ]}
+  end
+
 
   describe "#fetch" do
     let(:foo) { double("foo", :name => "foo") }
@@ -50,21 +134,11 @@ describe Derelict::Plugin::Manager do
         expect { subject }.to raise_error Derelict::Plugin::NotFound
       end
     end
+
+    include_context "logged messages"
+    let(:expected_logs) {[
+      "DEBUG manager: Successfully initialized Derelict::Plugin::Manager for test instance\n",
+    ]}
   end
 
-  describe "#installed?" do
-    let(:plugin_name) { double("plugin_name") }
-    let(:result) { double("result") }
-    subject { manager.installed? plugin_name }
-
-    context "with known plugin" do
-      before { expect(manager).to receive(:fetch).with(plugin_name).and_return(result) }
-      it { should be true }
-    end
-
-    context "with unknown plugin" do
-      before { expect(manager).to receive(:fetch).with(plugin_name).and_raise(Derelict::Plugin::NotFound.new plugin_name) }
-      it { should be false }
-    end
-  end
 end
