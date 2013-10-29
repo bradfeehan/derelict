@@ -35,7 +35,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "log4r"
   spec.add_runtime_dependency "memoist"
   spec.add_runtime_dependency "shell-executer"
-  spec.add_runtime_dependency "mime-types", "<2.0" # for coveralls 1.8
 
 
   version_major = RbConfig::CONFIG["MAJOR"].to_i
@@ -49,6 +48,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "its"
+  spec.add_development_dependency "mime-types", "<2.0" # for coveralls
 
   # When running on Travis CI, any passing builds will be deployed
   # (i.e. pushed to RubyGems). This changes the version number so that
