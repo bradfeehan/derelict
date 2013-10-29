@@ -25,6 +25,12 @@ describe Derelict::Instance do
     end
   end
 
+  describe "#plugins" do
+    subject { instance.plugins }
+    it { should be_a Derelict::Plugin::Manager }
+    its(:instance) { should be instance }
+  end
+
   context "with path parameter" do
     let(:path) { "/foo/bar" }
 

@@ -92,6 +92,12 @@ module Derelict
       Derelict::Connection.new(self, path).validate!
     end
 
+    # Initializes a plugin manager for use with this instance
+    def plugins
+      logger.info "Creating plugin manager for #{description}"
+      Derelict::Plugin::Manager.new(self)
+    end
+
     # Provides a description of this Instance
     #
     # Mainly used for log messages.
