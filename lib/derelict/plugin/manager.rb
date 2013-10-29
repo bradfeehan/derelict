@@ -30,8 +30,8 @@ module Derelict
       # Determines whether a particular plugin is installed
       #
       #   * plugin_name: Name of the plugin to look for (as a string)
-      def installed?(plugin_name)
-        fetch plugin_name; true
+      def installed?(plugin_name, version = nil)
+        fetch(plugin_name).version == version or version.nil?
       rescue Plugin::NotFound
         false
       end

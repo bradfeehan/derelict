@@ -38,17 +38,42 @@ describe Derelict::Plugin::Manager do
 
   describe "#installed?" do
     let(:plugin_name) { double("plugin_name") }
-    let(:result) { double("result") }
-    subject { manager.installed? plugin_name }
+    let(:plugin) { double("plugin", :version => plugin_version) }
+    let(:plugin_version) { nil }
+    let(:version) { nil }
+    subject { manager.installed? plugin_name, version }
 
     context "with known plugin" do
-      before { expect(manager).to receive(:fetch).with(plugin_name).and_return(result) }
-      it { should be true }
+      before { expect(manager).to receive(:fetch).with(plugin_name).and_return(plugin) }
+
+      context "with version" do
+        let(:version) { "1.2.3" }
+        let(:plugin_version) { "1.2.3" }
+        it { should be true }
+      end
+
+      context "with wrong version" do
+        let(:version) { "1.2.3" }
+        let(:plugin_version) { "2.3.4" }
+        it { should be false }
+      end
+
+      context "without version" do
+        it { should be true }
+      end
     end
 
     context "with unknown plugin" do
       before { expect(manager).to receive(:fetch).with(plugin_name).and_raise(Derelict::Plugin::NotFound.new plugin_name) }
-      it { should be false }
+
+      context "with version" do
+        let(:version) { "3.4.5" }
+        it { should be false }
+      end
+
+      context "without version" do
+        it { should be false }
+      end
     end
 
     include_context "logged messages"
