@@ -56,7 +56,9 @@ module Derelict
         command.concat ["--plugin-version", version] unless version.nil?
 
         log_block = options[:log] ? shell_log_block : nil
-        instance.execute! *command, &log_block
+        instance.execute!(*command, &log_block).tap do
+          flush_cache # flush memoized method return values
+        end
       end
 
       # Uninstalls a particular Vagrant plugin
@@ -67,7 +69,9 @@ module Derelict
         logger.info "Uninstalling plugin '#{plugin_name}' using #{description}"
 
         log_block = options[:log] ? shell_log_block : nil
-        instance.execute! :plugin, "uninstall", plugin_name, &log_block
+        instance.execute!(:plugin, "uninstall", plugin_name, &log_block).tap do
+          flush_cache # flush memoized method return values
+        end
       end
 
       # Updates a particular Vagrant plugin
@@ -78,7 +82,9 @@ module Derelict
         logger.info "Updating plugin '#{plugin_name}' using #{description}"
 
         log_block = options[:log] ? shell_log_block : nil
-        instance.execute! :plugin, "update", plugin_name, &log_block
+        instance.execute!(:plugin, "update", plugin_name, &log_block).tap do
+          flush_cache # flush memoized method return values
+        end
       end
 
       # Retrieves a plugin with a particular name
