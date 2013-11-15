@@ -125,19 +125,31 @@ describe Derelict::VirtualMachine do
 
     context "with correct number of arguments" do
       let(:args) { [:up, name] }
-      before do
-        expect(connection).to receive(:execute!).with(*args).and_yield("foo").and_return result
-      end
 
       context "with external logging disabled" do
+        before do
+          expect(connection).to receive(:execute!).with(*args).and_return result
+        end
+
         include_context "logged messages"
         let(:expected_logs) {[
           "DEBUG virtualmachine: Successfully initialized Derelict::VirtualMachine 'testvm' from test\n",
           " INFO virtualmachine: Bringing up Derelict::VirtualMachine 'testvm' from test\n",
         ]}
+
+        context "with different provider" do
+          let(:options) { {:provider => "foobar"} }
+          let(:args) { [:up, name, "--provider", "foobar"] }
+
+          it { should be result }
+        end
       end
 
       context "with external logging enabled" do
+        before do
+          expect(connection).to receive(:execute!).with(*args).and_yield("foo", nil).and_return result
+        end
+
         let(:options) { {:log => true} }
 
         include_context "logged messages"
@@ -163,7 +175,7 @@ describe Derelict::VirtualMachine do
 
     let(:args) { [:halt, name] }
     before do
-      expect(connection).to receive(:execute!).with(*args).and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(*args).and_yield("foo", nil).and_return result
     end
 
     context "with external logging disabled" do
@@ -199,7 +211,7 @@ describe Derelict::VirtualMachine do
 
     let(:args) { [:destroy, name, '--force'] }
     before do
-      expect(connection).to receive(:execute!).with(*args).and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(*args).and_yield("foo", nil).and_return result
     end
 
     context "with external logging disabled" do
@@ -234,7 +246,7 @@ describe Derelict::VirtualMachine do
     subject { vm.reload! options }
 
     before do
-      expect(connection).to receive(:execute!).with(:reload, name).and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(:reload, name).and_yield("foo", nil).and_return result
     end
 
     context "with external logging disabled" do
@@ -263,7 +275,7 @@ describe Derelict::VirtualMachine do
     subject { vm.suspend! options }
 
     before do
-      expect(connection).to receive(:execute!).with(:suspend, name).and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(:suspend, name).and_yield("foo", nil).and_return result
     end
 
     context "with external logging disabled" do
@@ -292,7 +304,7 @@ describe Derelict::VirtualMachine do
     subject { vm.resume! options }
 
     before do
-      expect(connection).to receive(:execute!).with(:resume, name).and_yield("foo").and_return result
+      expect(connection).to receive(:execute!).with(:resume, name).and_yield("foo", nil).and_return result
     end
 
     context "with external logging disabled" do
