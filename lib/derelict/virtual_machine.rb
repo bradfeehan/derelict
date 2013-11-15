@@ -86,27 +86,27 @@ module Derelict
     #
     #     * log: Should the log output be printed? (defaults to false)
     COMMANDS.each do |command|
-      define_method :"#{command}!" do |*args|
-        if args.length > 1
-          message = "wrong number of arguments (#{args.length} for 0-1)"
+      define_method :"#{command}!" do |*opts|
+        # Ideally this block would have one argument with a default
+        # value of an empty Hash. Unfortunately, setting a default
+        # value for the arguments to a block is only supported in Ruby
+        # 1.9+. The splatted arguments thing is a way to allow zero or
+        # one argument, but it actually allows any number of arguments.
+        # So we need to emulate the error Ruby would throw if you give
+        # the wrong number of arguments.
+        if opts.length > 1
+          message = "wrong number of arguments (#{opts.length} for 0-1)"
           raise ArgumentError.new message
         end
 
-        args = [{}] if args.length == 0
+        # Set defaults for the opts hash
+        opts = {:color => false, :log => false}.merge(opts.first || {})
 
         # Log message if there's one for this command
-        message = log_message_for command
-        logger.info message unless message.nil?
+        log_message_for(command).tap {|m| logger.info m unless m.nil? }
 
-        # Set defaults for the options hash
-        options = {:log => false, :color => false}.merge args.first
-
-        # Execute the command, optionally logging output
-        log_block = options[:log] ? shell_log_block : nil
-
-        args = [command, name, *arguments_for(command)]
-        args << "--color" if options[:color]
-        connection.execute! *args, &log_block
+        # Execute the command!
+        execute! command, opts
       end
     end
 
@@ -126,10 +126,39 @@ module Derelict
     end
 
     private
+      # Executes a command on the connection for this VM
+      #
+      #   * command: The command to execute (as a symbol)
+      #   * options: A Hash of options, with the following optional keys:
+      #       * log:      Logs the output of the command if true
+      #                   (defaults to false)
+      #       * color:    Uses color in the log output (defaults to
+      #                   false, only relevant if log is true)
+      #       * provider: The Vagrant provider to use, one of
+      #                   "virtualbox" or "vmware_fusion" (defaults to
+      #                   "virtualbox")
+      def execute!(command, options)
+        # Build up the arguments to pass to connection.execute!
+        arguments = [command, name, *arguments_for(command)]
+        arguments << "--color" if options[:color]
+        if options[:provider]
+          arguments << "--provider"
+          arguments << options[:provider]
+        end
+
+        # Set up the block to use when executing -- if logging is
+        # enabled, use a block that logs the output; otherwise no block.
+        block = options[:log] ? shell_log_block : nil
+
+        # Execute the command
+        connection.execute! *arguments, &block
+      end
+
       # A block that can be passed to #execute to log the output
       def shell_log_block
-        Proc.new do |line|
-          logger(:type => :external).info line
+        Proc.new do |stdout, stderr|
+          # Only stdout or stderr is populated, the other will be nil
+          logger(:type => :external).info(stdout || stderr)
         end
       end
       memoize :shell_log_block
