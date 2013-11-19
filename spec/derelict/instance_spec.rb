@@ -162,8 +162,10 @@ describe Derelict::Instance do
     context "with mock Shell" do
       before do
         cmd = "/foo/bar/bin/vagrant test arg\\ 1"
-        expect(Shell).to receive(:execute).with(cmd).and_return(result)
+        expect(Shell).to receive(:execute).with(cmd, options).and_return(result)
       end
+
+      let(:options) { Hash.new }
 
       let(:result) do
         double("result", {
@@ -188,6 +190,14 @@ describe Derelict::Instance do
           "DEBUG instance: Generated command '/foo/bar/bin/vagrant test arg\\ 1' from subcommand 'test' with arguments [\"arg 1\"]\n",
           "DEBUG instance: Executing /foo/bar/bin/vagrant test arg\\ 1 using Derelict::Instance at '/foo/bar'\n",
         ]}
+
+        context "with options hash" do
+          let(:options) { {:foo => :bar} }
+          subject { instance.execute :test, "arg 1", :foo => :bar }
+          its(:stdout) { should eq "stdout\n" }
+          its(:stderr) { should eq "stderr\n" }
+          its(:success?) { should be success }
+        end
       end
 
       describe "#execute!" do

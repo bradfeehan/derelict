@@ -58,11 +58,15 @@ module Derelict
     #
     #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
     #   * arguments:  Arguments to pass to the subcommand (optional)
+    #   * options:    If the last argument is a Hash, it will be used
+    #                 as a hash of options to pass through to
+    #                 Shell.execute
     #   * block:      Passed through to Shell.execute (shell-executer)
     def execute(subcommand, *arguments, &block)
+      options = arguments.last.is_a?(Hash) ? arguments.pop : Hash.new
       command = command(subcommand, *arguments)
       logger.debug "Executing #{command} using #{description}"
-      Shell.execute command, &block
+      Shell.execute command, options, &block
     end
 
     # Executes a Vagrant subcommand, raising an exception on failure
