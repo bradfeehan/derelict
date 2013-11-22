@@ -29,7 +29,8 @@ module Derelict
     # Determines if a particular virtual machine exists in the output
     #
     #   * vm_name: The name of the virtual machine to look for
-    def exists?(vm_name)
+    def exists?(vm_name = nil)
+      return (vm_names.count > 0) if vm_name.nil?
       vm_names.include? vm_name.to_sym
     end
 
