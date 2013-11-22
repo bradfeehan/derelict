@@ -7,7 +7,7 @@ module Derelict
     extend Memoist
 
     # Regexp to extract the VM list from the "vagrant status" output
-    PARSE_LIST_FROM_OUTPUT = /\n\n((?:.*\n)+)\n/
+    PARSE_LIST_FROM_OUTPUT = /Current machine states:\n\n((?:.*\n)+)\n/i
 
     # Regexp to extract the state from a line in the VM list
     PARSE_STATE_FROM_LIST_ITEM = %r[
