@@ -1,6 +1,8 @@
 module Derelict
   # Represents an individual Vagrant box for a particular provider
   class Box
+    autoload :NotFound, "derelict/box/not_found"
+
     attr_reader :name, :provider
 
     # Initializes a box with a particular name and provider
