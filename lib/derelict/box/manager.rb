@@ -37,6 +37,56 @@ module Derelict
         false
       end
 
+      # Adds a box from a file or URL
+      #
+      # The provider will be automatically determined from the box
+      # file's manifest.
+      #
+      #   * box_name: The name of the box to add (e.g. "precise64")
+      #   * source:   The URL or path to the box file
+      #   * options:  Hash of options. Valid keys:
+      #      * log:   Whether to log the output (optional, defaults to
+      #               false)
+      def add(box_name, source, options)
+        options = {:log => false}.merge(options)
+        logger.info <<-END.gsub(/ {10}|\n\Z/, '')
+          Adding box '#{box_name}' from '#{source}' using #{description}
+        END
+
+        command = [:box, "add", box_name, source]
+
+        log_block = options[:log] ? shell_log_block : nil
+        instance.execute!(*command, &log_block).tap do
+          flush_cache # flush memoized method return values
+        end
+      end
+
+      # Removes an installed box for a particular provider
+      #
+      #   * box_name:    Name of the box to remove (e.g. "precise64")
+      #   * options:     Hash of options. Valid keys:
+      #      * log:      Whether to log the output (optional, defaults
+      #                  to false)
+      #      * provider: If specified, only the box for a particular
+      #                  provider is removed; otherwise (by default),
+      #                  the box is removed for all providers
+      def remove(box_name, options)
+        options = {:log => false, :provider => nil}.merge(options)
+
+        provider = options[:provider]
+        command = [:box, "remove", box_name]
+        command << provider unless provider.nil?
+
+        logger.info <<-END.gsub(/ {10}|\n\Z/, '')
+          Removing box '#{box_name}' for '#{provider}' using #{description}
+        END
+
+        log_block = options[:log] ? shell_log_block : nil
+        instance.execute!(*command, &log_block).tap do
+          flush_cache # flush memoized method return values
+        end
+      end
+
       # Retrieves a box with a particular name
       #
       #   * box_name: Name of the box to look for (as a string)

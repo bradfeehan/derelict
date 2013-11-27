@@ -102,15 +102,6 @@ module Derelict
       def description
         "Derelict::Plugin::Manager for #{instance.description}"
       end
-
-      private
-        # A block that can be passed to #execute to log the output
-        def shell_log_block
-          Proc.new do |line|
-            logger(:type => :external).info line
-          end
-        end
-        memoize :shell_log_block
     end
   end
 end

@@ -20,6 +20,13 @@ module Derelict
       end
 
       private
+        # A block that can be passed to #execute to log the output
+        def shell_log_block
+          Proc.new do |line|
+            logger(:type => :external).info line
+          end
+        end
+
         # Finds or creates a Logger with a particular fullname
         def find_or_create_logger(fullname)
           Log4r::Logger[fullname.to_s] || Log4r::Logger.new(fullname.to_s)
