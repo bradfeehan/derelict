@@ -47,7 +47,7 @@ module Derelict
       #   * options:  Hash of options. Valid keys:
       #      * log:   Whether to log the output (optional, defaults to
       #               false)
-      def add(box_name, source, options)
+      def add(box_name, source, options = {})
         options = {:log => false}.merge(options)
         logger.info <<-END.gsub(/ {10}|\n\Z/, '')
           Adding box '#{box_name}' from '#{source}' using #{description}
@@ -70,7 +70,7 @@ module Derelict
       #      * provider: If specified, only the box for a particular
       #                  provider is removed; otherwise (by default),
       #                  the box is removed for all providers
-      def remove(box_name, options)
+      def remove(box_name, options = {})
         options = {:log => false, :provider => nil}.merge(options)
 
         provider = options[:provider]
