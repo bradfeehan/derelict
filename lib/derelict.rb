@@ -9,6 +9,7 @@ Log4r::Logger["root"] # creates the level constants (INFO, etc).
 
 # Main module/entry point for Derelict
 module Derelict
+  autoload :Box,            "derelict/box"
   autoload :Connection,     "derelict/connection"
   autoload :Exception,      "derelict/exception"
   autoload :Instance,       "derelict/instance"
