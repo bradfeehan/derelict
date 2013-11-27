@@ -31,6 +31,12 @@ describe Derelict::Instance do
     its(:instance) { should be instance }
   end
 
+  describe "#boxes" do
+    subject { instance.boxes }
+    it { should be_a Derelict::Box::Manager }
+    its(:instance) { should be instance }
+  end
+
   context "with path parameter" do
     let(:path) { "/foo/bar" }
 
