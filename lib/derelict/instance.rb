@@ -102,6 +102,12 @@ module Derelict
       Derelict::Plugin::Manager.new(self)
     end
 
+    # Initializes a box manager for use with this instance
+    def boxes
+      logger.info "Creating box manager for #{description}"
+      Derelict::Box::Manager.new(self)
+    end
+
     # Provides a description of this Instance
     #
     # Mainly used for log messages.
