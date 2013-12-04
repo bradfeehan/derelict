@@ -59,12 +59,18 @@ module Derelict
     #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
     #   * arguments:  Arguments to pass to the subcommand (optional)
     #   * options:    If the last argument is a Hash, it will be used
-    #                 as a hash of options to pass through to
-    #                 Shell.execute
+    #                 as a hash of options. A list of valid options is
+    #                 below. Any options provided that aren't in the
+    #                 list of valid options will get passed through to
+    #                 Shell.execute (from the "shell-executer" gem).
+    #                 Valid option keys:
+    #      * sudo:    Whether to run the command as root, or not
+    #                 (defaults to false)
     #   * block:      Passed through to Shell.execute (shell-executer)
     def execute(subcommand, *arguments, &block)
       options = arguments.last.is_a?(Hash) ? arguments.pop : Hash.new
       command = command(subcommand, *arguments)
+      command = "sudo -- #{command}" if options.delete(:sudo)
       logger.debug "Executing #{command} using #{description}"
       Shell.execute command, options, &block
     end
