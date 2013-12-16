@@ -34,7 +34,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "log4r"
   spec.add_runtime_dependency "memoist"
-  spec.add_runtime_dependency "shell-executer"
 
 
   version_major = RbConfig::CONFIG["MAJOR"].to_i
