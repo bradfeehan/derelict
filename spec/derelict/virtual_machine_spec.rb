@@ -164,6 +164,12 @@ describe Derelict::VirtualMachine do
           let(:args) { [:up, name, '--color'] }
           it { should be result }
         end
+
+        context "in chars mode" do
+          let(:options) { {:log => true, :log_mode => :chars} }
+          let(:args) { [:up, name, {:mode => :chars}] }
+          it { should be result }
+        end
       end
     end
   end

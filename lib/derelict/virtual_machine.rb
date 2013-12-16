@@ -132,6 +132,8 @@ module Derelict
       #   * options: A Hash of options, with the following optional keys:
       #       * log:      Logs the output of the command if true
       #                   (defaults to false)
+      #       * log_mode: Controls how commands are logged (one of
+      #                   either :chars or :lines, defaults to :lines)
       #       * color:    Uses color in the log output (defaults to
       #                   false, only relevant if log is true)
       #       * provider: The Vagrant provider to use, one of
@@ -144,6 +146,10 @@ module Derelict
         if options[:provider]
           arguments << "--provider"
           arguments << options[:provider]
+        end
+
+        if options[:log_mode]
+          arguments << {:mode => options[:log_mode]}
         end
 
         # Set up the block to use when executing -- if logging is
