@@ -1,6 +1,7 @@
 require "derelict/version"
 require "log4r"
 require "memoist"
+require "open4"
 require "set"
 require "shellwords"
 
