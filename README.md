@@ -64,7 +64,7 @@ instance = Derelict.instance("/path/to/vagrant")
 instance = Derelict.instance # Defaults to /Applications/Vagrant
 
 # Issue commands to the instance directly (not usually necessary)
-result = instance.execute('--version') # Shell::Executer object
+result = instance.execute('--version') # Derelict::Executer object
 print "success" if result.success?     # if Vagrant's exit status was 0
 print result.stdout                    # "Vagrant 1.3.3\n"
 
@@ -73,7 +73,7 @@ connection = instance.connect("/path/to/project")
 
 # Issue commands to the connection directly (runs from the project dir)
 result = connection.execute(:up) # runs "vagrant up" in project dir
-result.success?                  # it's a Shell::Executer object again
+result.success?                  # Derelict::Executer object again
 
 # Retrieve a particular VM from a connection (multi-machine support)
 vm = connection.vm(:web) # "vm" is a Derelict::VirtualMachine

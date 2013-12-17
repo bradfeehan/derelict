@@ -2,11 +2,13 @@ module Derelict
   class Instance
     # Represents an invalid instance, which can't be used with Derelict
     class CommandFailed < Derelict::Exception
-      # Initializes a new instance of this exception, with a reason
+      # Initializes a new instance of this exception, for a command
       #
-      #   * reason: The result (Shell::Executer) for the command that
-      #             failed (optional, provides extra detail in the
-      #             message)
+      #   * command: The name of the command which failed (optional,
+      #              provides extra detail in the message)
+      #   * result:  The result (Derelict::Executer) for the command
+      #              which failed (optional, provides extra detail in
+      #              the message)
       def initialize(command = nil, result = nil)
         super [default_message, describe(command, result)].join
       end

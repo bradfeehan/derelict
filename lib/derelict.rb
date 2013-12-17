@@ -1,8 +1,8 @@
 require "derelict/version"
 require "log4r"
 require "memoist"
+require "open4"
 require "set"
-require "shell/executer"
 require "shellwords"
 
 Log4r::Logger["root"] # creates the level constants (INFO, etc).
@@ -12,6 +12,7 @@ module Derelict
   autoload :Box,            "derelict/box"
   autoload :Connection,     "derelict/connection"
   autoload :Exception,      "derelict/exception"
+  autoload :Executer,       "derelict/executer"
   autoload :Instance,       "derelict/instance"
   autoload :Parser,         "derelict/parser"
   autoload :Plugin,         "derelict/plugin"

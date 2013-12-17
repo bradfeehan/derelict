@@ -48,7 +48,7 @@ module Derelict
     #
     #   * subcommand: Vagrant subcommand to run (:up, :status, etc.)
     #   * arguments:  Arguments to pass to the subcommand (optional)
-    #   * block:      Passed through to Shell.execute (shell-executer)
+    #   * block:      Passed through to Derelict::Executer.execute
     #
     # Raises +Derelict::Instance::CommandFailed+ if the command fails.
     def execute!(subcommand, *arguments, &block)
