@@ -4,6 +4,9 @@ module Derelict
   # The safety involved is mainly ensuring that the command is
   # gracefully terminated if this process is about to terminate.
   class Executer
+    # Include "logger" method to get a logger for this class
+    include Utils::Logger
+
     attr_reader :stdout, :stderr
 
     # Executes <tt>command</tt> and returns after execution
@@ -43,6 +46,8 @@ module Derelict
     def initialize(options = {})
       @options = {:mode => :lines, :no_buffer => false}.merge(options)
 
+      logger.info "Initializing with options: #{@options.inspect}"
+
       if @options[:mode] == :chars
         @reader = proc {|s| s.getc }
       else
@@ -61,6 +66,7 @@ module Derelict
     #              second parameter is stderr; only one will contain
     #              data, the other will be nil)
     def execute(command, &block)
+      logger.info "Executing command '#{command}'"
       reset
       pid, stdin, stdout_stream, stderr_stream = Open4::popen4(command)
       stdin.close rescue nil
@@ -72,6 +78,7 @@ module Derelict
 
       self
     ensure
+      logger.debug "Closing stdout and stderr streams for process"
       stdout.close rescue nil
       stderr.close rescue nil
     end
@@ -91,6 +98,7 @@ module Derelict
       # This is done when first initialising, and just before a command
       # is run, to get rid of the previous command's data.
       def reset
+        logger.debug "Resetting executer state"
         @stdout = ''
         @stderr = ''
         @success = nil
@@ -101,9 +109,13 @@ module Derelict
       # This will set the @status instance variable to true if the exit
       # status was 0, or false if the exit status was anything else.
       def save_exit_status(pid)
+        logger.debug "Spawning thread to monitor process ID #{pid}"
         @success = nil
         Thread.start do
-          @success = (Process.waitpid2(pid).last.exitstatus == 0)
+          logger.debug "Thread started, waiting for PID #{pid}"
+          status = Process.waitpid2(pid).last.exitstatus
+          logger.debug "Process exited with status #{status}"
+          @success = (status == 0)
         end
       end
 
@@ -114,6 +126,7 @@ module Derelict
       #              defaults to SIGINT only)
       def forward_signals_to(pid, signals = %w[INT])
         # Set up signal handlers
+        logger.debug "Setting up signal handlers for #{signals.inspect}"
         signal_count = 0
         signals.each do |signal|
           Signal.trap(signal) do
@@ -136,6 +149,7 @@ module Derelict
       #
       #   * signals: An array of signal names to reset the handlers for
       def reset_handlers_for(signals)
+        logger.debug "Resetting signal handlers for #{signals.inspect}"
         signals.each {|signal| Signal.trap signal, "DEFAULT" }
       end
 
@@ -145,6 +159,7 @@ module Derelict
       #   * stderr_stream: The process' stderr stream
       #   * block:         The block to pass output to (optional)
       def handle_streams(stdout_stream, stderr_stream, &block)
+        logger.debug "Monitoring stdout/stderr streams for output"
         streams = [stdout_stream, stderr_stream]
         until streams.empty?
           # Find which streams are ready for reading, timeout 0.1s
@@ -155,7 +170,13 @@ module Derelict
 
           selected.each do |stream|
             if stream.eof?
-              streams.delete(stream) unless @success.nil?
+              logger.debug "Stream reached end-of-file"
+              if @success.nil?
+                logger.debug "Process hasn't finished, keeping stream"
+              else
+                logger.debug "Removing stream"
+                streams.delete(stream)
+              end
               next
             end
 
