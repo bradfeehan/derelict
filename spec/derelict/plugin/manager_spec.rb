@@ -91,7 +91,7 @@ describe Derelict::Plugin::Manager do
     subject { manager.install plugin_name, :version => version, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:plugin, "install", plugin_name, '--plugin-version', version).and_yield("test").and_return(result)
+      expect(instance).to receive(:execute!).with(:plugin, "install", plugin_name, '--plugin-version', version).and_yield("test", nil).and_return(result)
     end
 
     it { should be result }
@@ -122,7 +122,7 @@ describe Derelict::Plugin::Manager do
     subject { manager.uninstall plugin_name, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:plugin, "uninstall", plugin_name).and_yield("test").and_return(result)
+      expect(instance).to receive(:execute!).with(:plugin, "uninstall", plugin_name).and_yield("test", nil).and_return(result)
     end
 
     it { should be result }
@@ -153,7 +153,7 @@ describe Derelict::Plugin::Manager do
     subject { manager.update plugin_name, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:plugin, "update", plugin_name).and_yield("test").and_return(result)
+      expect(instance).to receive(:execute!).with(:plugin, "update", plugin_name).and_yield("test", nil).and_return(result)
     end
 
     it { should be result }

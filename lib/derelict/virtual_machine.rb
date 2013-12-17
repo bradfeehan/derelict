@@ -160,15 +160,6 @@ module Derelict
         connection.execute! *arguments, &block
       end
 
-      # A block that can be passed to #execute to log the output
-      def shell_log_block
-        Proc.new do |stdout, stderr|
-          # Only stdout or stderr is populated, the other will be nil
-          logger(:type => :external).info(stdout || stderr)
-        end
-      end
-      memoize :shell_log_block
-
       # Retrieves the arguments for a particular action
       #
       #   * action: The symbol representing the action (one of :up,

@@ -71,7 +71,7 @@ describe Derelict::Box::Manager do
     subject { manager.add box_name, source, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:box, "add", box_name, source).and_yield("test").and_return(result)
+      expect(instance).to receive(:execute!).with(:box, "add", box_name, source).and_yield("test", nil).and_return(result)
     end
 
     it { should be result }
@@ -103,7 +103,7 @@ describe Derelict::Box::Manager do
     subject { manager.remove box_name, :provider => provider, :log => log }
 
     before do
-      expect(instance).to receive(:execute!).with(:box, "remove", box_name, provider).and_yield("test").and_return(result)
+      expect(instance).to receive(:execute!).with(:box, "remove", box_name, provider).and_yield("test", nil).and_return(result)
     end
 
     it { should be result }
