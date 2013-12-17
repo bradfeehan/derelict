@@ -7,7 +7,7 @@ module Derelict
     # Include "logger" method to get a logger for this class
     include Utils::Logger
 
-    attr_reader :stdout, :stderr
+    attr_reader :stdout, :stderr, :pid
 
     # Executes <tt>command</tt> and returns after execution
     #
@@ -69,6 +69,7 @@ module Derelict
       logger.info "Executing command '#{command}'"
       reset
       pid, stdin, stdout_stream, stderr_stream = Open4::popen4(command)
+      @pid = pid
       stdin.close rescue nil
 
       save_exit_status(pid)
@@ -102,6 +103,7 @@ module Derelict
         @stdout = ''
         @stderr = ''
         @success = nil
+        @pid = nil
       end
 
       # Waits for the exit status of a process (in a thread) saving it
