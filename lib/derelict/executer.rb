@@ -4,7 +4,7 @@ module Derelict
   # The safety involved is mainly ensuring that the command is
   # gracefully terminated if this process is about to terminate.
   class Executer
-    attr_reader :stdout, :stderr, :success
+    attr_reader :stdout, :stderr
 
     # Executes <tt>command</tt> and returns after execution
     #
@@ -69,6 +69,14 @@ module Derelict
       self
     end
 
+    # Determines whether the last command was successful or not
+    #
+    # If the command's exit status was zero, this will return true.
+    # If the command's exit status is anything else, this will return
+    # false. If a command is currently running, this will return nil.
+    def success?
+      @success
+    end
 
     private
       # Clears the variables relating to a particular command execution

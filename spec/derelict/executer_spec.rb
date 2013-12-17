@@ -22,7 +22,7 @@ describe Derelict::Executer do
     it { should be_a described_class }
     its(:stdout) { should eq "" }
     its(:stderr) { should eq "" }
-    its(:success) { should be_nil }
+    its(:success?) { should be_nil }
 
     context "with :chars mode specified" do
       let(:options) { {:mode => :chars} }
@@ -42,7 +42,7 @@ describe Derelict::Executer do
       let(:command) { "echo 'test 1'" }
       its(:stdout) { should eq "test 1\n" }
       its(:stderr) { should eq "" }
-      its(:success) { should be_true }
+      its(:success?) { should be_true }
 
       context "with non-existent command" do
         let(:command) { "not_actually_a_command" }
@@ -53,7 +53,7 @@ describe Derelict::Executer do
 
       context "with unsuccessful command" do
         let(:command) { "false" }
-        its(:success) { should be_false }
+        its(:success?) { should be_false }
       end
     end
 
@@ -69,7 +69,7 @@ describe Derelict::Executer do
 
         its(:stdout) { should eq "test 2\n" }
         its(:stderr) { should eq "" }
-        its(:success) { should be_true }
+        its(:success?) { should be_true }
         specify "the block should get called" do
           subject; expect(@buffer).to eq executer.stdout
         end
@@ -87,7 +87,7 @@ describe Derelict::Executer do
 
         its(:stdout) { should eq "test 3\n" }
         its(:stderr) { should eq "test 4\n" }
-        its(:success) { should be_true }
+        its(:success?) { should be_true }
         specify "the block should get called" do
           subject
           expect(@stdout).to eq executer.stdout
