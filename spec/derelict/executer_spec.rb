@@ -55,6 +55,30 @@ describe Derelict::Executer do
         let(:command) { "false" }
         its(:success?) { should be_false }
       end
+
+      # Unfortunately this part is even worse. It seems to work though!
+      # The basic idea is for a thread to kill *this* process once the
+      # sub-process has started. It's still relatively fast, and is at
+      # least an accurate way to model the real-world use.
+      context "when main process is receives a signal" do
+        subject {
+          Thread.new do
+            # Wait for the sub-process to start
+            sleep 0.01 while executer.pid.nil?
+
+            # Send SIGINT to this process, it should get forwarded on
+            # to the sub-process
+            Process.kill "INT", Process.pid
+          end
+
+          # Start the sub-process
+          executer.execute "sleep 10"
+        }
+
+        specify "the sub-process should get killed" do
+          expect(subject.success?).to be_false
+        end
+      end
     end
 
     context "with a block" do
