@@ -62,11 +62,18 @@ module Derelict
     #              data, the other will be nil)
     def execute(command, &block)
       reset
-      pid, stdin, stdout, stderr = Open4::popen4(command)
+      pid, stdin, stdout_stream, stderr_stream = Open4::popen4(command)
+      stdin.close rescue nil
 
       save_exit_status(pid)
-      forward_signals_to(pid) { handle_streams stdout, stderr, &block }
+      forward_signals_to(pid) do
+        handle_streams stdout_stream, stderr_stream, &block
+      end
+
       self
+    ensure
+      stdout.close rescue nil
+      stderr.close rescue nil
     end
 
     # Determines whether the last command was successful or not
@@ -94,8 +101,8 @@ module Derelict
       # This will set the @status instance variable to true if the exit
       # status was 0, or false if the exit status was anything else.
       def save_exit_status(pid)
+        @success = nil
         Thread.start do
-          @success = nil
           @success = (Process.waitpid2(pid).last.exitstatus == 0)
         end
       end
@@ -122,11 +129,11 @@ module Derelict
 
       # Manages reading from the stdout and stderr streams
       #
-      #   * stdout: The process' stdout stream
-      #   * stderr: The process' stderr stream
-      #   * block:  The block to pass any read data to (optional)
-      def handle_streams(stdout, stderr, &block)
-        streams = [stdout, stderr]
+      #   * stdout_stream: The process' stdout stream
+      #   * stderr_stream: The process' stderr stream
+      #   * block:         The block to pass output to (optional)
+      def handle_streams(stdout_stream, stderr_stream, &block)
+        streams = [stdout_stream, stderr_stream]
         until streams.empty?
           # Find which streams are ready for reading, timeout 0.1s
           selected, = select(streams, nil, nil, 0.1)
@@ -142,7 +149,7 @@ module Derelict
 
             while data = @reader.call(stream)
               data = ((@options[:mode] == :chars) ? data.chr : data)
-              stream_name = (stream == stdout) ? :stdout : :stderr
+              stream_name = (stream == stdout_stream) ? :stdout : :stderr
               output data, stream_name, &block unless block.nil?
             end
           end
