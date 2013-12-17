@@ -165,10 +165,10 @@ describe Derelict::Instance do
       ]}
     end
 
-    context "with mock Shell" do
+    context "with mock Executer" do
       let(:expected_command) { "/foo/bar/bin/vagrant test arg\\ 1" }
       before do
-        expect(Shell).to receive(:execute).with(expected_command, options).and_return(result)
+        expect(Derelict::Executer).to receive(:execute).with(expected_command, options).and_return(result)
       end
 
       let(:options) { Hash.new }
@@ -207,7 +207,7 @@ describe Derelict::Instance do
 
         context "with :sudo option enabled" do
           let(:options_argument) { {:sudo => true} }
-          let(:options) { Hash.new } # Don't pass sudo opt to Shell.execute
+          let(:options) { Hash.new } # Don't pass sudo opt to Executer.execute
           let(:expected_command) { "sudo -- /foo/bar/bin/vagrant test arg\\ 1" }
           subject { instance.execute :test, "arg 1", options_argument }
           its(:stdout) { should eq "stdout\n" }

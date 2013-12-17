@@ -72,7 +72,7 @@ module Derelict
       command = command(subcommand, *arguments)
       command = "sudo -- #{command}" if options.delete(:sudo)
       logger.debug "Executing #{command} using #{description}"
-      Shell.execute command, options, &block
+      Executer.execute command, options, &block
     end
 
     # Executes a Vagrant subcommand, raising an exception on failure
