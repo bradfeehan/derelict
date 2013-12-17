@@ -114,17 +114,29 @@ module Derelict
       #              defaults to SIGINT only)
       def forward_signals_to(pid, signals = %w[INT])
         # Set up signal handlers
+        signal_count = 0
         signals.each do |signal|
-          Signal.trap(signal) { Process.kill signal, pid }
+          Signal.trap(signal) do
+            Process.kill signal, pid rescue nil
+
+            # If this is the second time we've received and forwarded
+            # on the signal, make sure next time we just give up.
+            reset_handlers_for signals if ++signal_count >= 2
+          end
         end
 
         # Run the block now that the signals are being forwarded
         yield
+      ensure
+        # Always good to make sure we clean up after ourselves
+        reset_handlers_for signals
+      end
 
-        # Reset signal handlers
-        signals.each do |signal|
-          Signal.trap signal, "DEFAULT"
-        end
+      # Resets the handlers for particular signals to the default
+      #
+      #   * signals: An array of signal names to reset the handlers for
+      def reset_handlers_for(signals)
+        signals.each {|signal| Signal.trap signal, "DEFAULT" }
       end
 
       # Manages reading from the stdout and stderr streams
@@ -151,6 +163,7 @@ module Derelict
               data = ((@options[:mode] == :chars) ? data.chr : data)
               stream_name = (stream == stdout_stream) ? :stdout : :stderr
               output data, stream_name, &block unless block.nil?
+              buffer data, stream_name unless @options[:no_buffer]
             end
           end
         end
@@ -174,14 +187,18 @@ module Derelict
         else
           yield data if stream_name == :stdout
         end
+      end
 
-        # Add to the buffers
-        unless @options[:no_buffer]
-          if stream_name == :stdout
-            @stdout += data
-          else
-            @stderr += data
-          end
+      # Buffers data for a stream into this object to retrieve it later
+      #
+      #   * data:        The data that should be added to the buffer
+      #   * stream_name: Which stream the data came from (:stdout or
+      #                  :stderr)
+      def buffer(data, stream_name)
+        if stream_name == :stdout
+          @stdout += data
+        else
+          @stderr += data
         end
       end
   end
