@@ -19,21 +19,21 @@ describe Derelict::Parser::BoxList do
     context "with valid output" do
       let(:output) {
         <<-END.gsub /^ +/, ""
-          foo (provider_one)
-          bar (provider_two)
+          foobar (provider_one)
+          baz    (provider_two)
         END
       }
 
-      let(:foo) { Derelict::Box.new "foo", "provider_one" }
-      let(:bar) { Derelict::Box.new "bar", "provider_two" }
-      it { should eq Set[foo, bar] }
+      let(:foobar) { Derelict::Box.new "foobar", "provider_one" }
+      let(:baz) { Derelict::Box.new "baz", "provider_two" }
+      it { should eq Set[foobar, baz] }
     end
 
     context "with invalid output" do
       let(:output) {
         <<-END.gsub /^ +/, ""
-          foo (provider_one) lolwut
-          bar with no brackets
+          foobar (provider_one) lolwut
+          baz with no brackets
         END
       }
 

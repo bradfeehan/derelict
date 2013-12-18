@@ -18,8 +18,8 @@ module Derelict
     #   1. Box name, as listed in the output
     #   2. Name of the provider for that box
     PARSE_BOX = %r[
-      ^(.*)    # Box name starts at the start of the line
-      \ \(     # Provider is separated by a space and open-parenthesis
+      ^(.*?)   # Box name starts at the start of the line
+      \ +\(    # Provider is separated by spaces and open-parenthesis
         (.*)   # Provider name
       \)$      # Ends with close-parenthesis and end-of-line
     ]x         # Ignore whitespace to allow these comments
