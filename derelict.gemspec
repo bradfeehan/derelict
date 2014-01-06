@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "log4r"
+  spec.add_runtime_dependency "log4r", "~> 1.1.0", "!= 1.1.11"
   spec.add_runtime_dependency "memoist"
   spec.add_runtime_dependency "open4"
 
