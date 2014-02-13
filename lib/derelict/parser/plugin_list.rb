@@ -2,6 +2,7 @@ module Derelict
   # Parses the output of "vagrant plugin list"
   class Parser::PluginList < Parser
     autoload :InvalidFormat, "derelict/parser/plugin_list/invalid_format"
+    autoload :NeedsReinstall, "derelict/parser/plugin_list/needs_reinstall"
 
     # Include "memoize" class method to memoize methods
     extend Memoist
