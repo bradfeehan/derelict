@@ -10,7 +10,9 @@ else
   version_minor = RbConfig::CONFIG["MINOR"].to_i
   if version_major >= 2 or (version_major == 1 and version_minor >= 9)
     require "simplecov"
-    SimpleCov.start
+    SimpleCov.start do
+      add_filter "/spec/"
+    end
   end
 end
 
