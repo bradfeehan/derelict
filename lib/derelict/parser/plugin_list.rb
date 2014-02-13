@@ -20,9 +20,21 @@ module Derelict
       $                # at the end of the line.
     ]x                 # Ignore whitespace to allow these comments.
 
+    # Regexp to determine whether plugins need to be reinstalled
+    NEEDS_REINSTALL = %r[
+      ^The\splugins\sbelow\swill\snot\sbe\sloaded\suntil\sthey're\s
+      uninstalled\sand\sreinstalled:$
+    ]x
+
     # Retrieves a Set containing all the plugins from the output
     def plugins
+      raise NeedsReinstall, output if needs_reinstall?
       plugin_lines.map {|l| parse_line l.match(PARSE_PLUGIN) }.to_set
+    end
+
+    # Determines if old plugins need to be reinstalled
+    def needs_reinstall?
+      output =~ NEEDS_REINSTALL
     end
 
     # Provides a description of this Parser
