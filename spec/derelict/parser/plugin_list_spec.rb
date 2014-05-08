@@ -12,7 +12,7 @@ describe Derelict::Parser::PluginList do
     let(:output) {
       <<-END.gsub /^ +/, ""
         foo (2.3.4)
-        bar (1.2.3)
+        bar (1.2.3, system)
       END
     }
 
