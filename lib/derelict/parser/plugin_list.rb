@@ -14,11 +14,11 @@ module Derelict
     #   1. Plugin name, as listed in the output
     #   2. Currently installed version (without surrounding brackets)
     PARSE_PLUGIN = %r[
-      ^(.*)            # Plugin name starts at the start of the line.
-      \                # Version is separated by a space character,
-      \(([0-9\-_.]+)\) # contains version string surrounded by brackets
-      $                # at the end of the line.
-    ]x                 # Ignore whitespace to allow these comments.
+      ^(.*)                  # Plugin name starts at the start of the line.
+      \                      # Version is separated by a space character,
+      \(([0-9\-_.]+)(, .*)?\) # contains version string surrounded by brackets
+      $                      # at the end of the line.
+    ]x                       # Ignore whitespace to allow these comments.
 
     # Regexp to determine whether plugins need to be reinstalled
     NEEDS_REINSTALL = %r[
