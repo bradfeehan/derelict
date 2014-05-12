@@ -68,30 +68,42 @@ describe Derelict::Box::Manager do
     let(:box_name) { double("box_name", :to_s => "test box") }
     let(:source) { double("source", :to_s => "test source") }
     let(:result) { double("result") }
-    subject { manager.add box_name, source, :log => log }
+    let(:options) { {:log => log} }
+    subject { manager.add box_name, source, options }
 
-    before do
-      expect(instance).to receive(:execute!).with(:box, "add", box_name, source).and_yield("test", nil).and_return(result)
+    context "with force disabled" do
+      before do
+        expect(instance).to receive(:execute!).with(:box, "add", box_name, source).and_yield("test", nil).and_return(result)
+      end
+
+      it { should be result }
+
+      context "with logging enabled" do
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG manager: Successfully initialized Derelict::Box::Manager for test instance\n",
+          " INFO manager: Adding box 'test box' from 'test source' using Derelict::Box::Manager for test instance\n",
+          " INFO external: test\n",
+        ]}
+      end
+
+      context "with logging disabled" do
+        let(:log) { false }
+        include_context "logged messages"
+        let(:expected_logs) {[
+          "DEBUG manager: Successfully initialized Derelict::Box::Manager for test instance\n",
+          " INFO manager: Adding box 'test box' from 'test source' using Derelict::Box::Manager for test instance\n",
+        ]}
+      end
     end
 
-    it { should be result }
+    context "with force enabled" do
+      before do
+        expect(instance).to receive(:execute!).with(:box, "add", box_name, source, "--force").and_return(result)
+      end
 
-    context "with logging enabled" do
-      include_context "logged messages"
-      let(:expected_logs) {[
-        "DEBUG manager: Successfully initialized Derelict::Box::Manager for test instance\n",
-        " INFO manager: Adding box 'test box' from 'test source' using Derelict::Box::Manager for test instance\n",
-        " INFO external: test\n",
-      ]}
-    end
-
-    context "with logging disabled" do
-      let(:log) { false }
-      include_context "logged messages"
-      let(:expected_logs) {[
-        "DEBUG manager: Successfully initialized Derelict::Box::Manager for test instance\n",
-        " INFO manager: Adding box 'test box' from 'test source' using Derelict::Box::Manager for test instance\n",
-      ]}
+      let(:options) { {:force => true} }
+      it { should be result }
     end
   end
 

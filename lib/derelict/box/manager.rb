@@ -54,6 +54,7 @@ module Derelict
         END
 
         command = [:box, "add", box_name, source]
+        command << "--force" if options[:force]
 
         log_block = options[:log] ? shell_log_block : nil
         instance.execute!(*command, &log_block).tap do
