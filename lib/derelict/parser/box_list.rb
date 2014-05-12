@@ -20,7 +20,7 @@ module Derelict
     PARSE_BOX = %r[
       ^(.*?)   # Box name starts at the start of the line
       \ +\(    # Provider is separated by spaces and open-parenthesis
-        (.*)   # Provider name
+        (\w+)  # Provider name
       \)$      # Ends with close-parenthesis and end-of-line
     ]x         # Ignore whitespace to allow these comments
 

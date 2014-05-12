@@ -30,15 +30,25 @@ describe Derelict::Parser::BoxList do
     end
 
     context "with invalid output" do
-      let(:output) {
-        <<-END.gsub /^ +/, ""
-          foobar (provider_one) lolwut
-          baz with no brackets
-        END
-      }
+      context "with text after brackets" do
+        let(:output) { "foobar (provider_one) lolwut" }
+        it "should raise InvalidFormat" do
+          expect { subject }.to raise_error Derelict::Parser::BoxList::InvalidFormat
+        end
+      end
 
-      it "should raise InvalidFormat" do
-        expect { subject }.to raise_error Derelict::Parser::BoxList::InvalidFormat
+      context "with no brackets" do
+        let(:output) { "baz with no brackets" }
+        it "should raise InvalidFormat" do
+          expect { subject }.to raise_error Derelict::Parser::BoxList::InvalidFormat
+        end
+      end
+
+      context "with too much stuff in brackets" do
+        let(:output) { "qux (foo, 0)" }
+        it "should raise InvalidFormat" do
+          expect { subject }.to raise_error Derelict::Parser::BoxList::InvalidFormat
+        end
       end
     end
 
