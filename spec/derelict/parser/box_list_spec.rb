@@ -27,6 +27,12 @@ describe Derelict::Parser::BoxList do
       let(:foobar) { Derelict::Box.new "foobar", "provider_one" }
       let(:baz) { Derelict::Box.new "baz", "provider_two" }
       it { should eq Set[foobar, baz] }
+
+      context "with versioned boxes" do
+        let(:output) { "qux (foo, 0)" }
+        let(:qux) { Derelict::Box.new "qux", "foo" }
+        it { should eq Set[qux] }
+      end
     end
 
     context "with invalid output" do
@@ -39,13 +45,6 @@ describe Derelict::Parser::BoxList do
 
       context "with no brackets" do
         let(:output) { "baz with no brackets" }
-        it "should raise InvalidFormat" do
-          expect { subject }.to raise_error Derelict::Parser::BoxList::InvalidFormat
-        end
-      end
-
-      context "with too much stuff in brackets" do
-        let(:output) { "qux (foo, 0)" }
         it "should raise InvalidFormat" do
           expect { subject }.to raise_error Derelict::Parser::BoxList::InvalidFormat
         end

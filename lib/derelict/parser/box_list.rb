@@ -21,6 +21,7 @@ module Derelict
       ^(.*?)   # Box name starts at the start of the line
       \ +\(    # Provider is separated by spaces and open-parenthesis
         (\w+)  # Provider name
+      (:?,.+)? # Version, ignored
       \)$      # Ends with close-parenthesis and end-of-line
     ]x         # Ignore whitespace to allow these comments
 
