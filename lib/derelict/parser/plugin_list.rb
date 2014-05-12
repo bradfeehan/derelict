@@ -14,11 +14,14 @@ module Derelict
     #   1. Plugin name, as listed in the output
     #   2. Currently installed version (without surrounding brackets)
     PARSE_PLUGIN = %r[
-      ^(.*)                  # Plugin name starts at the start of the line.
-      \                      # Version is separated by a space character,
-      \(([0-9\-_.]+)(, .*)?\) # contains version string surrounded by brackets
-      $                      # at the end of the line.
-    ]x                       # Ignore whitespace to allow these comments.
+      ^([A-Za-z0-9\-_.]+) # Plugin name starts at the start of the line.
+      \                   # Version is separated by a space character,
+      \(                  # surrounded by brackets,
+        ([0-9\-_.]+)      # consists of numbers, hyphens, underscore, dot,
+        (, .*)?           # optionally followed by a comma space and word
+      \)
+      $                   # at the end of the line.
+    ]x                    # Ignore whitespace to allow these comments.
 
     # Regexp to determine whether plugins need to be reinstalled
     NEEDS_REINSTALL = %r[
@@ -48,7 +51,7 @@ module Derelict
       # Retrieves an array of the plugin lines in the output
       def plugin_lines
         return [] if output.match /no plugins installed/i
-        output.lines
+        output.lines.grep(/^\w/)
       end
 
       # Parses a single line of the output into a Plugin object
