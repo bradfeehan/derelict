@@ -93,6 +93,14 @@ module Derelict
       @success
     end
 
+    # Return the real exit status of the last command as it was returned to
+    # the system.  This is useful if your doing things like running commands
+    # inside a vm over ssh and want to obtain the exit status from the command
+    # itself.  If a command is currently running, this will return nil.
+    def status
+      @status
+    end
+
     private
       # Clears the variables relating to a particular command execution
       #
@@ -103,6 +111,7 @@ module Derelict
         @stdout = ''
         @stderr = ''
         @success = nil
+        @status = nil
         @pid = nil
       end
 
@@ -115,9 +124,9 @@ module Derelict
         @success = nil
         Thread.start do
           logger.debug "Thread started, waiting for PID #{pid}"
-          status = Process.waitpid2(pid).last.exitstatus
-          logger.debug "Process exited with status #{status}"
-          @success = (status == 0)
+          @status = Process.waitpid2(pid).last.exitstatus
+          logger.debug "Process exited with status #{@status}"
+          @success = (@status == 0)
         end
       end
 
