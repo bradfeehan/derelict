@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "derelict/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "derelict"
+  spec.name          = "derelict_m"
   spec.version       = Derelict::VERSION
   spec.authors       = ["Brad Feehan"]
   spec.email         = ["git@bradfeehan.com"]
