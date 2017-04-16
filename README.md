@@ -67,6 +67,7 @@ instance = Derelict.instance # Defaults to /Applications/Vagrant
 result = instance.execute('--version') # Derelict::Executer object
 print "success" if result.success?     # if Vagrant's exit status was 0
 print result.stdout                    # "Vagrant 1.3.3\n"
+print result.status                    # 0
 
 # Connect to a Vagrant project (containing a Vagrantfile)
 connection = instance.connect("/path/to/project")
